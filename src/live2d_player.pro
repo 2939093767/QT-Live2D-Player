@@ -1,0 +1,96 @@
+QT       += core gui openglwidgets widgets
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++17
+DEFINES += CSM_TARGET_WIN_GL
+QMAKE_PROJECT_DEPTH = 0
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    CustomWidget.cpp \
+    config_setting.cpp \
+    config_widget.cpp \
+    live2d_src/CubismSampleViewMatrix_Common.cpp \
+    live2d_src/CubismUserModelExtend.cpp \
+    live2d_src/LAppAllocator_Common.cpp \
+    live2d_src/LAppDefine.cpp \
+    live2d_src/LAppDelegate.cpp \
+    live2d_src/LAppLive2DManager.cpp \
+    live2d_src/LAppModel.cpp \
+    live2d_src/LAppModel_Common.cpp \
+    live2d_src/LAppPal.cpp \
+    live2d_src/LAppSprite.cpp \
+    live2d_src/LAppSpriteShader.cpp \
+    live2d_src/LAppSprite_Common.cpp \
+    live2d_src/LAppTextureManager.cpp \
+    live2d_src/LAppTextureManager_Common.cpp \
+    live2d_src/LAppView.cpp \
+    live2d_src/LAppView_Common.cpp \
+    live2d_src/LAppWavFileHandler_Common.cpp \
+    live2d_src/MouseActionManager.cpp \
+    live2d_src/MouseActionManager_Common.cpp \
+    live2d_src/TouchManager_Common.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    myopenglw.cpp
+
+HEADERS += \
+    CustomWidget.h \
+    config_setting.h \
+    config_widget.h \
+    live2d_src/CubismSampleViewMatrix_Common.hpp \
+    live2d_src/CubismUserModelExtend.hpp \
+    live2d_src/LAppAllocator_Common.hpp \
+    live2d_src/LAppDefine.hpp \
+    live2d_src/LAppDelegate.hpp \
+    live2d_src/LAppLive2DManager.hpp \
+    live2d_src/LAppModel.hpp \
+    live2d_src/LAppModel_Common.hpp \
+    live2d_src/LAppPal.hpp \
+    live2d_src/LAppSprite.hpp \
+    live2d_src/LAppSpriteShader.hpp \
+    live2d_src/LAppSprite_Common.hpp \
+    live2d_src/LAppTextureManager.hpp \
+    live2d_src/LAppTextureManager_Common.hpp \
+    live2d_src/LAppView.hpp \
+    live2d_src/LAppView_Common.hpp \
+    live2d_src/LAppWavFileHandler_Common.hpp \
+    live2d_src/MouseActionManager.hpp \
+    live2d_src/MouseActionManager_Common.hpp \
+    live2d_src/TouchManager_Common.hpp \
+    mainwindow.h \
+    myopenglw.h
+
+FORMS += \
+    AppWidget.ui \
+    ModelWidget.ui \
+    config_widget.ui \
+    mainwindow.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+
+
+INCLUDEPATH += $$PWD/inc/Core/include
+INCLUDEPATH += $$PWD/inc/GLFW
+INCLUDEPATH += $$PWD/inc
+INCLUDEPATH += $$PWD/inc/Framework
+INCLUDEPATH += $$PWD/inc/stb
+INCLUDEPATH += $$PWD/inc/Common
+INCLUDEPATH += $$PWD/live2d_src
+
+
+LIBS += -L$$PWD/LIBS/framework/ -lFramework
+LIBS += -L$$PWD/LIBS/glew/ -llibglew32
+LIBS += -L$$PWD/LIBS/glfw/ -lglfw3
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/LIBS/live2dCore/ -lLive2DCubismCore_MD
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/LIBS/live2dCore/ -lLive2DCubismCore_MDd
+
+RESOURCES += \
+    image.qrc \
+    qttheme/darkstyle.qrc
