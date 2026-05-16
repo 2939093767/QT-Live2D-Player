@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>resource/images/back_class_normal.png</file>
+        <file>resource/images/close.png</file>
+        <file>resource/images/icon_gear.png</file>
+        <file>resource/images/pet.png</file>
+    </qresource>
+</RCC>
