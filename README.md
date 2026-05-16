@@ -8,6 +8,6 @@ More features will be added gradually. Stay tuned.
 '''
 
 
-![界面截图](images/model_widget.png)
 
-![界面截图](images/config_widget.png)
+
+![界面截图](images/model_widget.png)![界面截图](images/config_widget.png)
