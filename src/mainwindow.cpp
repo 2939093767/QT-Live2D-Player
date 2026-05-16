@@ -9,10 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowFlag(Qt::FramelessWindowHint); /* 1 */
-    setAttribute(Qt::WA_TranslucentBackground); /* 2 */
-    setWindowFlag(Qt::WindowStaysOnTopHint, true);
-
+    // setWindowFlag(Qt::FramelessWindowHint); /* 1 */
+    // setAttribute(Qt::WA_TranslucentBackground); /* 2 */
+    // setWindowFlag(Qt::WindowStaysOnTopHint, true);
+    setAttribute(Qt::WA_TranslucentBackground);
+    SetAppMode(WINDOW_MODE);
     setMenuBar(nullptr);        // 移除菜单栏
     setStatusBar(nullptr);      // 移除底部状态栏
     //centralWidget()->layout()->setContentsMargins(0,0,0,0);
@@ -136,12 +137,10 @@ void MainWindow::SetAppMode(APP_MODE mode)
 {
     if(mode == PET_MODE){
         setWindowFlag(Qt::FramelessWindowHint,true); /* 1 */
-        setAttribute(Qt::WA_TranslucentBackground,true); /* 2 */
         setWindowFlag(Qt::WindowStaysOnTopHint, true);
         ui->centralwidget->SetMode(PET_MODE);
     }else if(mode == WINDOW_MODE){
         setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
-        setAttribute(Qt::WA_TranslucentBackground, false);
         setWindowFlag(Qt::WindowStaysOnTopHint, false);
         ui->centralwidget->SetMode(WINDOW_MODE);
         // setAttribute(Qt::WA_AlwaysStackOnTop, false);
