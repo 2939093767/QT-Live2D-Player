@@ -104,7 +104,7 @@ void ConfigManager::initDefaultConfig()
     m_settings.setValue(CONFIG_APP_FPS, 0);
     m_settings.setValue(CONFIG_APP_MODEL_CONTROL, 0);
     //qDebug()<<QCoreApplication::applicationDirPath();
-    m_settings.setValue(CONFIG_MODEL_FOLDER, QCoreApplication::applicationDirPath().toUtf8()+"Resources/Haru");
+    m_settings.setValue(CONFIG_MODEL_FOLDER, QCoreApplication::applicationDirPath()+"/Resources/Haru");
 
     // 同步保存默认配置
     m_settings.sync();

@@ -85,11 +85,11 @@ INCLUDEPATH += $$PWD/inc/Common
 INCLUDEPATH += $$PWD/live2d_src
 
 
-LIBS += -L$$PWD/LIBS/framework/ -lFramework
-LIBS += -L$$PWD/LIBS/glew/ -llibglew32
-LIBS += -L$$PWD/LIBS/glfw/ -lglfw3
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/LIBS/live2dCore/ -lLive2DCubismCore_MD
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/LIBS/live2dCore/ -lLive2DCubismCore_MDd
+LIBS += -L$$PWD/libfiles/framework/ -lFramework
+LIBS += -L$$PWD/libfiles/glew/ -llibglew32
+LIBS += -L$$PWD/libfiles/glfw/ -lglfw3
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libfiles/live2dCore/ -lLive2DCubismCore_MD
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libfiles/live2dCore/ -lLive2DCubismCore_MDd
 
 RESOURCES += \
     image.qrc \
