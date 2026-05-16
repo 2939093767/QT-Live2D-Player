@@ -6,7 +6,9 @@
 #include <QString>
 #include <QVariant>
 #include <QWidget>
+#include <QWinEventNotifier>
 #include <qapplication.h>
+#include <windows.h>
 
 
 //配置名称
@@ -49,7 +51,7 @@ struct motion_unit{
     QString name;
     MOTION_TYPE type;
     QString hitarea = "";
-    int quickkey_id = 0;
+    QString quickkey = "";
     bool quickkey_isuse = false;
     bool isuse = true;
 };
@@ -133,8 +135,7 @@ public:
     QMap<QString,motion_unit> GetActiveMotion();
 
     QMap<QString, motion_unit> GetHitareaMotion(QString area);
-    QMap<QString, motion_unit> GetQuickKeyMotion(int quickkey_id);
-
+    QMap<QString, motion_unit> GetQuickKeyMotion(QString quickkey_name);
 
 private:
     QRC_Manager(){
@@ -147,33 +148,40 @@ private:
 
 
 
-class GlobalHotKeyMgr : public QObject
+
+
+
+
+
+
+
+
+
+
+class GlobalKeyHook : public QObject
 {
     Q_OBJECT
 public:
-    // 单例
-    explicit GlobalHotKeyMgr(QObject* parent = nullptr, QWidget* target = nullptr)
-        :m_widget(target){}
-    ~GlobalHotKeyMgr() override;
-    // 无论App是否前台都有效
-    int registerHotKey(int modifier, int keyCode);
-    // 注销单个
-    void unregisterHotKey(int id);
-    // 注销全部
-    void unregisterAll();
+    static GlobalKeyHook& instance(){
+        static GlobalKeyHook m_instance;
+        return m_instance;
+    }
+    explicit GlobalKeyHook(QObject *parent = nullptr);
+    ~GlobalKeyHook();
 
+    // 启动 / 停止监听
+    void start();
+    void stop();
+    static QString vkCodeToQString(int vkCode);
 
 signals:
-    // 热键触发（全局）
-    void hotKeyTriggered(int id);
+    // 全局按键信号：按键码、Ctrl、Alt、Shift
+    void keyPressed(int vkCode, bool ctrl, bool alt, bool shift);
 
 private:
-    QWidget* m_widget;
-    QMap<int, bool> m_ids;
+    static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+    HHOOK m_keyboardHook;
 };
-
-
-
 
 
 

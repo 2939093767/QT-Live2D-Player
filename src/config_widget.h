@@ -142,8 +142,8 @@ public:
     const void RegisterglobalhotKey(int id, int MOD_KEY, int key = 0);
 
 
-protected:
-    bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
+// protected:
+//     bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 
 
 public slots:
@@ -155,7 +155,7 @@ public slots:
 
 
 private:
-    GlobalHotKeyMgr* m_hotkey_manager;
+    //GlobalKeyboard* m_hotkey_manager;
     Ui::ModelWidget* ui;
     bool israndom_ex;
     bool israndom_mo;

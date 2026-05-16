@@ -257,7 +257,7 @@ ModelWidget::ModelWidget(QWidget* parent)
     ui->setupUi(this);
     ui->widget->setLayout(new QVBoxLayout());
     ui->widget_2->setLayout(new QVBoxLayout());
-    m_hotkey_manager = new GlobalHotKeyMgr(this,this);
+    GlobalKeyHook::instance().start();
     //this->change_ui();
 
 }
@@ -268,6 +268,7 @@ ModelWidget::~ModelWidget()
 {
     israndom_ex = false;
     israndom_mo = false;
+    GlobalKeyHook::instance().stop();
 }
 
 void ModelWidget::change_ui()
@@ -286,7 +287,7 @@ void ModelWidget::change_ui()
     }
 
     p_config_widgets.clear();
-    m_hotkey_manager->unregisterAll();
+
 
     ui->comboBox->setCurrentText(ConfigManager::instance().getValue(CONFIG_MODEL_FOLDER).toString());
     p_config_widgets[CONFIG_MODEL_FOLDER] = ui->comboBox;
@@ -489,11 +490,9 @@ void ModelWidget::QuickkeyUpdate(bool clicked)
     QLabel* edit_3 = qobject_cast<QLabel*>(layout->itemAt(btnIndex - 3)->widget());
     motion_unit unit = QRC_Manager::instance().GetALLMotion(edit_3->text());
     unit.hitarea = edit_2->currentText();
-    //注册热键
-    int modify,key;
-    ProgramUtils::parseHotKeyString(edit_1->currentText(),modify,key);
-    if(unit.quickkey_id == 0)unit.quickkey_id = m_hotkey_manager->registerHotKey(modify,key);
+    unit.quickkey = edit_1->currentText();
     unit.quickkey_isuse = clicked;
+    qDebug()<<unit.hitarea<<unit.quickkey_isuse;
     //添加动作
     QRC_Manager::instance().AddMotion(unit.name,unit);
 }
@@ -547,27 +546,28 @@ void ModelWidget::motion_israndom(bool clicked)
 
 
 
-bool ModelWidget::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
-{
-    Q_UNUSED(eventType)
-    Q_UNUSED(result)
-    MSG* msg = reinterpret_cast<MSG*>(message);
-    if (msg->message == WM_HOTKEY)
-    {
-        int hotId = static_cast<int>(msg->wParam);
-        auto motions = QRC_Manager::instance().GetQuickKeyMotion(hotId);
-        qDebug()<<"组合id:"<<hotId << "个数:" << motions.size();
-        for(auto motion : motions){
-            if(motion.type == EXPRESSION){
-                LAppLive2DManager::GetInstance()->GetModel(0)->SetExpression(motion.name.toUtf8());
-            }else{
-                QStringList parts = motion.name.split('_');
-                QString group = parts[0];               // 前面：字符串
-                int no = parts[1].toInt();    // 后面：转int
-                LAppLive2DManager::GetInstance()->GetModel(0)->StartMotion(group.toUtf8(),no,1);
-            }
-        }
-    }
-    return false;
-}
+// bool ModelWidget::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
+// {
+//     Q_UNUSED(eventType)
+
+//     MSG* msg = reinterpret_cast<MSG*>(message);
+//     if (msg->message == WM_HOTKEY)
+//     {
+//         int vk = LOWORD(msg->lParam);       // 按键码 如 VK_A, '1', etc
+//         int mod = HIWORD(msg->lParam);     // 修饰键 Ctrl/Alt/Shift
+
+
+//         int hotId = static_cast<int>(msg->wParam);
+//
+
+
+//         // 3. 补发键盘消息 → 让系统正常输入字符（关键！）
+//         keybd_event((BYTE)vk, 0, 0, 0);        // 按下
+//         keybd_event((BYTE)vk, 0, KEYEVENTF_KEYUP, 0); // 松开
+
+//         // 4. 必须返回 true，表示我们处理了
+//         return true;
+//     }
+//     return false;
+// }
 

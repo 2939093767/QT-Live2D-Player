@@ -194,40 +194,52 @@ int QRC_Manager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 namespace {
 
 #ifdef QT_MOC_HAS_STRINGDATA
-struct qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS_t {};
-static constexpr auto qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS = QtMocHelpers::stringData(
-    "GlobalHotKeyMgr",
-    "hotKeyTriggered",
+struct qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS_t {};
+static constexpr auto qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS = QtMocHelpers::stringData(
+    "GlobalKeyHook",
+    "keyPressed",
     "",
-    "id"
+    "vkCode",
+    "ctrl",
+    "alt",
+    "shift"
 );
 #else  // !QT_MOC_HAS_STRING_DATA
-struct qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS_t {
-    uint offsetsAndSizes[8];
-    char stringdata0[16];
-    char stringdata1[16];
+struct qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS_t {
+    uint offsetsAndSizes[14];
+    char stringdata0[14];
+    char stringdata1[11];
     char stringdata2[1];
-    char stringdata3[3];
+    char stringdata3[7];
+    char stringdata4[5];
+    char stringdata5[4];
+    char stringdata6[6];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(sizeof(qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS_t::offsetsAndSizes) + ofs), len 
-Q_CONSTINIT static const qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS_t qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS = {
+    uint(sizeof(qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS_t::offsetsAndSizes) + ofs), len 
+Q_CONSTINIT static const qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS_t qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS = {
     {
-        QT_MOC_LITERAL(0, 15),  // "GlobalHotKeyMgr"
-        QT_MOC_LITERAL(16, 15),  // "hotKeyTriggered"
-        QT_MOC_LITERAL(32, 0),  // ""
-        QT_MOC_LITERAL(33, 2)   // "id"
+        QT_MOC_LITERAL(0, 13),  // "GlobalKeyHook"
+        QT_MOC_LITERAL(14, 10),  // "keyPressed"
+        QT_MOC_LITERAL(25, 0),  // ""
+        QT_MOC_LITERAL(26, 6),  // "vkCode"
+        QT_MOC_LITERAL(33, 4),  // "ctrl"
+        QT_MOC_LITERAL(38, 3),  // "alt"
+        QT_MOC_LITERAL(42, 5)   // "shift"
     },
-    "GlobalHotKeyMgr",
-    "hotKeyTriggered",
+    "GlobalKeyHook",
+    "keyPressed",
     "",
-    "id"
+    "vkCode",
+    "ctrl",
+    "alt",
+    "shift"
 };
 #undef QT_MOC_LITERAL
 #endif // !QT_MOC_HAS_STRING_DATA
 } // unnamed namespace
 
-Q_CONSTINIT static const uint qt_meta_data_CLASSGlobalHotKeyMgrENDCLASS[] = {
+Q_CONSTINIT static const uint qt_meta_data_CLASSGlobalKeyHookENDCLASS[] = {
 
  // content:
       11,       // revision
@@ -241,44 +253,47 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSGlobalHotKeyMgrENDCLASS[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   20,    2, 0x06,    1 /* Public */,
+       1,    4,   20,    2, 0x06,    1 /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::Int,    3,
+    QMetaType::Void, QMetaType::Int, QMetaType::Bool, QMetaType::Bool, QMetaType::Bool,    3,    4,    5,    6,
 
        0        // eod
 };
 
-Q_CONSTINIT const QMetaObject GlobalHotKeyMgr::staticMetaObject = { {
+Q_CONSTINIT const QMetaObject GlobalKeyHook::staticMetaObject = { {
     QMetaObject::SuperData::link<QObject::staticMetaObject>(),
-    qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS.offsetsAndSizes,
-    qt_meta_data_CLASSGlobalHotKeyMgrENDCLASS,
+    qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS.offsetsAndSizes,
+    qt_meta_data_CLASSGlobalKeyHookENDCLASS,
     qt_static_metacall,
     nullptr,
-    qt_incomplete_metaTypeArray<qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS_t,
+    qt_incomplete_metaTypeArray<qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS_t,
         // Q_OBJECT / Q_GADGET
-        QtPrivate::TypeAndForceComplete<GlobalHotKeyMgr, std::true_type>,
-        // method 'hotKeyTriggered'
+        QtPrivate::TypeAndForceComplete<GlobalKeyHook, std::true_type>,
+        // method 'keyPressed'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>
     >,
     nullptr
 } };
 
-void GlobalHotKeyMgr::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void GlobalKeyHook::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        auto *_t = static_cast<GlobalHotKeyMgr *>(_o);
+        auto *_t = static_cast<GlobalKeyHook *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->hotKeyTriggered((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 0: _t->keyPressed((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[4]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (GlobalHotKeyMgr::*)(int );
-            if (_t _q_method = &GlobalHotKeyMgr::hotKeyTriggered; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+            using _t = void (GlobalKeyHook::*)(int , bool , bool , bool );
+            if (_t _q_method = &GlobalKeyHook::keyPressed; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 0;
                 return;
             }
@@ -286,20 +301,20 @@ void GlobalHotKeyMgr::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
     }
 }
 
-const QMetaObject *GlobalHotKeyMgr::metaObject() const
+const QMetaObject *GlobalKeyHook::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *GlobalHotKeyMgr::qt_metacast(const char *_clname)
+void *GlobalKeyHook::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_CLASSGlobalHotKeyMgrENDCLASS.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_CLASSGlobalKeyHookENDCLASS.stringdata0))
         return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
-int GlobalHotKeyMgr::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int GlobalKeyHook::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)
@@ -317,9 +332,9 @@ int GlobalHotKeyMgr::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void GlobalHotKeyMgr::hotKeyTriggered(int _t1)
+void GlobalKeyHook::keyPressed(int _t1, bool _t2, bool _t3, bool _t4)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_WARNING_POP
