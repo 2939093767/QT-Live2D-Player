@@ -40,7 +40,7 @@ namespace LAppDefine {
     const csmChar* PowerImageName = "close.png";
 
     // シェーダー相対パス
-    const csmChar* ShaderPath = QCoreApplication::applicationDirPath().toUtf8()+"SampleShaders/";
+    const csmChar* ShaderPath = "SampleShaders/";
     // 頂点シェーダー
     const csmChar* VertShaderName = "VertSprite.vert";
     // フラグメントシェーダー
