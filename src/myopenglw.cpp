@@ -16,9 +16,7 @@ MyOpenGL::MyOpenGL(QWidget *parent)
 
 MyOpenGL::~MyOpenGL()
 {
-
-
-
+    qApp->quit();
 }
 
 void MyOpenGL::initializeGL()
