@@ -17,14 +17,14 @@
 #include "LAppModel.hpp"
 #include "LAppLive2DManager.hpp"
 #include "LAppView.hpp"
+#include "Framework/CubismDefaultParameterId.hpp"
 
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QObject>
 #include <QMouseEvent>
 
-#include "config_setting.h"
-
-
+#include "ConfigManager/qrc_manager.h"
+#include "ConfigManager/configini.h"
 
 
 
@@ -42,15 +42,17 @@ public:
 
     const void SetMode(APP_MODE mode){m_mode = mode;}
 
-
-
+    void KeyRenderUpdate();
+    void FaceRenderUpdate();
 
 
 public slots:
     void modelupdate();
+    void StartRender();
+    void StopRender();
 
 
-
+    void ChangeModel();
 protected:
 /**********************************************
 * @brief         初始化gl
@@ -97,6 +99,8 @@ private:
     float  m_offsetX;       // 画布X偏移
     float  m_offsetY;       // 画布Y偏移
 
+    //运行标志位
+    bool   m_isrunning;
 };
 
 

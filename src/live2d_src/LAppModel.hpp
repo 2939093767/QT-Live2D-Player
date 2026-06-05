@@ -14,6 +14,8 @@
 #include "LAppWavFileHandler_Common.hpp"
 #include "LAppModel_Common.hpp"
 
+namespace Live2D { namespace Cubism { namespace Framework { class CubismMotionManager; } } }
+
 /**
  * @brief ユーザーが実際に使用するモデルの実装クラス<br>
  *         モデル生成、機能コンポーネント生成、更新処理とレンダリングの呼び出しを行う。
@@ -125,6 +127,7 @@ public:
 
 
 
+
     /***************************************************************
 *  @FileName:   LAppModel.hpp
 *  @Brief:      外部表情动作接口
@@ -134,9 +137,18 @@ public:
 ****************************************************************/
     Csm::csmVector<Csm::csmString> GetExpressionNames();
     Csm::csmVector<Csm::csmString> GetMotionNames();
-    Csm::ICubismModelSetting* GetSetting(){return _modelSetting;};
-    //Csm::CubismMotionQueueEntryHandle StartMotion(const Csm::csmChar* group, Csm::csmInt32 no, Csm::csmInt32 priority, Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler = NULL, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler = NULL);
-    //Csm::CubismMotionQueueEntryHandle StartMotionNormal(const Csm::csmChar* group, Csm::csmInt32 no, Csm::csmInt32 priority, Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler = NULL, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler = NULL);
+    Csm::ICubismModelSetting* GetSetting(){return _modelSetting;}
+
+    /***************************************************************
+*  @FileName:   LAppModel.hpp
+*  @Brief:      自定义部件参数接口
+*  @Author:     LH
+*  @Date:       2026-05-29
+*  @note:
+****************************************************************/
+    void ChangeValueParamter(Csm::csmString idname,Csm::csmFloat32 value);
+    void LoadDifferentParamter();
+    void ShowParamterUpDown(Live2D::Cubism::Framework::csmString idname);
 
 protected:
     /**
@@ -191,11 +203,14 @@ private:
     */
     void ReleaseExpressions();
 
+
+    Csm::CubismMotionManager* _mouthMotionManager;/// <<< 追加
     Csm::ICubismModelSetting* _modelSetting; ///< モデルセッティング情報
     Csm::csmString _modelHomeDir; ///< モデルセッティングが置かれたディレクトリ
     Csm::csmFloat32 _userTimeSeconds; ///< デルタ時間の積算値[秒]
     Csm::csmVector<Csm::CubismIdHandle> _eyeBlinkIds; ///< モデルに設定されたまばたき機能用パラメータID
     Csm::csmVector<Csm::CubismIdHandle> _lipSyncIds; ///< モデルに設定されたリップシンク機能用パラメータID
+    Csm::csmVector<Csm::CubismIdHandle> _mouthIds; ///< モデルに設定されたリップシンク機能用パラメータID
     Csm::csmMap<Csm::csmString, Csm::ACubismMotion*>   _motions; ///< 読み込まれているモーションのリスト
     Csm::csmMap<Csm::csmString, Csm::ACubismMotion*>   _expressions; ///< 読み込まれている表情のリスト
     Csm::csmVector<Csm::csmRectF> _hitArea;
@@ -211,4 +226,6 @@ private:
     LAppWavFileHandler_Common _wavFileHandler; ///< wavファイルハンドラ
 
     Csm::Rendering::CubismRenderTarget_OpenGLES2  _renderBuffer;   ///< フレームバッファ以外の描画先
+
+    Csm::csmMap<Csm::csmString,Csm::csmFloat32> saveValue;
 };

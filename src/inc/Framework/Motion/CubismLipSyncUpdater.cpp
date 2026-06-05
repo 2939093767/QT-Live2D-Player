@@ -7,6 +7,9 @@
 
 #include "CubismLipSyncUpdater.hpp"
 
+#include <LAppPal.hpp>
+#include <qDebug>
+
 namespace Live2D { namespace Cubism { namespace Framework {
 
 CubismLipSyncUpdater::CubismLipSyncUpdater(csmVector<CubismIdHandle>& lipSyncIds, IParameterProvider& wavFileHandler)
@@ -25,6 +28,7 @@ CubismLipSyncUpdater::CubismLipSyncUpdater(csmVector<CubismIdHandle>& lipSyncIds
 
 void CubismLipSyncUpdater::OnLateUpdate(CubismModel* model, const csmFloat32 deltaTimeSeconds)
 {
+    LAppPal::PrintLogLn("Lip change");
     if (model == nullptr)
     {
         return;
@@ -33,14 +37,34 @@ void CubismLipSyncUpdater::OnLateUpdate(CubismModel* model, const csmFloat32 del
     // リアルタイムでリップシンクを行う場合、システムから音量を取得して0〜1の範囲で値を入力します。
     csmFloat32 value = 0.0f;
 
-    // 状態更新/パラメータ値取得
+    // // 状態更新/パラメータ値取得
     _wavFileHandler.Update(deltaTimeSeconds);
     value = _wavFileHandler.GetParameter();
-
+    //LAppPal::PrintLogLn("%d : %d",value,_lipSyncIds.GetSize());
+    //qDebug()<<value<<_lipSyncIds.GetSize();
     for (csmUint32 i = 0; i < _lipSyncIds.GetSize(); ++i)
     {
-        model->AddParameterValue(_lipSyncIds[i], value, 0.8f);
+        LAppPal::PrintLogLn("s",_lipSyncIds[i]);
+        model->AddParameterValue(_lipSyncIds[i], customvalue, 0.8f);
     }
+
+
 }
+
+
+
+
+void CubismLipSyncUpdater::ChangeValue(const csmFloat32 value)
+{
+
+    // if (model == nullptr)
+    // {
+    //     return;
+    // }
+
+    customvalue = value;
+}
+
+
 
 }}}

@@ -10,7 +10,7 @@
 
 
 // 配置文件路径（固定：程序目录下的 config.ini）
-#define CONFIG_FILE_PATH "config.ini"
+//#define CONFIG_FILE_PATH "config.ini"
 
 
 
@@ -57,60 +57,6 @@ public:
 
 
 
-ConfigManager::ConfigManager()
-    : m_settings(CONFIG_FILE_PATH, QSettings::IniFormat)
-{
-    // 同步一下 → 自动创建空的 ini 文件
-    m_settings.sync();
-    if(m_settings.childGroups().isEmpty())
-    {
-        initDefaultConfig();
-        return;
-    }
-    //判断文件是否有效
-    if(!ProgramUtils::Model3jsonfile_check(getValue(CONFIG_MODEL_FOLDER).toString())){
-        initDefaultConfig();
-        QMessageBox::critical(nullptr, "错误", "未检测到模型文件!恢复默认");
-    }
-}
-
-ConfigManager& ConfigManager::instance()
-{
-    static ConfigManager instance;
-    return instance;
-}
-
-QVariant ConfigManager::getValue(const QString& key, const QVariant& defaultValue) const
-{
-    return m_settings.value(key, defaultValue);
-}
-
-void ConfigManager::setValue(const QString& key, const QVariant& value)
-{
-    m_settings.setValue(key, value);
-}
-
-void ConfigManager::sync()
-{
-    m_settings.sync();
-}
-
-
-
-
-void ConfigManager::initDefaultConfig()
-{
-    // ==================== 默认配置组 ====================
-    AutoStart::set(false,"pet");
-    m_settings.setValue(CONFIG_APP_SOFT_START, false);
-    m_settings.setValue(CONFIG_APP_FPS, 0);
-    m_settings.setValue(CONFIG_APP_MODEL_CONTROL, 0);
-    //qDebug()<<QCoreApplication::applicationDirPath();
-    m_settings.setValue(CONFIG_MODEL_FOLDER, QCoreApplication::applicationDirPath()+"/Resources/Haru");
-
-    // 同步保存默认配置
-    m_settings.sync();
-}
 
 
 
@@ -130,99 +76,97 @@ void ConfigManager::initDefaultConfig()
 
 
 
-void QRC_Manager::SetupConfigByMoc()
-{
 
 
-}
+// void QRC_Manager::ClearManager()
+// {
+//     m_manager.clear();
+// }
 
-void QRC_Manager::ClearManager()
-{
-    m_manager.clear();
-}
+// QMap<QString, motion_unit> QRC_Manager::GetHitareaMotion(QString area)
+// {
+//     QMap<QString, motion_unit> resultMap;
+//     // 遍历内部的总 map
+//     for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
+//     {
+//         const QString& key = it.key();
+//         const motion_unit& unit = it.value();
 
-QMap<QString, motion_unit> QRC_Manager::GetHitareaMotion(QString area)
-{
-    QMap<QString, motion_unit> resultMap;
-    // 遍历内部的总 map
-    for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
-    {
-        const QString& key = it.key();
-        const motion_unit& unit = it.value();
+//         // ====================== 筛选条件 ======================
 
-        // ====================== 筛选条件 ======================
-
-        if (unit.hitarea == area && unit.isuse && unit.quickkey_isuse)
-        {
-            resultMap.insert(key, unit);
-        }
-    }
-    return resultMap;
-}
+//         if (unit.hitarea == area && unit.isuse && unit.quickkey_isuse)
+//         {
+//             resultMap.insert(key, unit);
+//         }
+//     }
+//     return resultMap;
+// }
 
 
 
 
-QMap<QString, motion_unit> QRC_Manager::GetQuickKeyMotion(QString quickkey_name)
-{
-    QMap<QString, motion_unit> resultMap;
-    // 遍历内部的总 map
-    for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
-    {
-        const QString& key = it.key();
-        const motion_unit& unit = it.value();
+// QMap<QString, motion_unit> QRC_Manager::GetQuickKeyMotion(QString quickkey_name)
+// {
+//     QMap<QString, motion_unit> resultMap;
+//     // 遍历内部的总 map
+//     for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
+//     {
+//         const QString& key = it.key();
+//         const motion_unit& unit = it.value();
 
-        // ====================== 筛选条件 ======================
-        // 提取 type == "expression" 的项
-        if (unit.quickkey == quickkey_name && unit.isuse && unit.quickkey_isuse)
-        {
-            resultMap.insert(key, unit);
-        }
-    }
-    return resultMap;
-}
-
-
-
-QMap<QString, motion_unit> QRC_Manager::GetActiveExpression()
-{
-    QMap<QString, motion_unit> resultMap;
-    // 遍历内部的总 map
-    for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
-    {
-        const QString& key = it.key();
-        const motion_unit& unit = it.value();
-
-        // ====================== 筛选条件 ======================
-        // 提取 type == "expression" 的项
-        if (unit.type == EXPRESSION && unit.isuse)
-        {
-            resultMap.insert(key, unit);
-        }
-    }
-    return resultMap;
-}
+//         // ====================== 筛选条件 ======================
+//         // 提取 type == "expression" 的项
+//         if (unit.quickkey == quickkey_name && unit.isuse && unit.quickkey_isuse)
+//         {
+//             resultMap.insert(key, unit);
+//         }
+//     }
+//     return resultMap;
+// }
 
 
 
-QMap<QString, motion_unit> QRC_Manager::GetActiveMotion()
-{
-    QMap<QString, motion_unit> resultMap;
-    // 遍历内部的总 map
-    for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
-    {
-        const QString& key = it.key();
-        const motion_unit& unit = it.value() ;
 
-        // ====================== 筛选条件 ======================
-        // 提取 type == "expression" 的项
-        if (unit.type == MOTION && unit.isuse)
-        {
-            resultMap.insert(key, unit);
-        }
-    }
-    return resultMap;
-}
+
+// QMap<QString, motion_unit> QRC_Manager::GetActiveExpression()
+// {
+//     QMap<QString, motion_unit> resultMap;
+//     // 遍历内部的总 map
+//     for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
+//     {
+//         const QString& key = it.key();
+//         const motion_unit& unit = it.value();
+
+//         // ====================== 筛选条件 ======================
+//         // 提取 type == "expression" 的项
+//         if (unit.type == EXPRESSION && unit.isuse)
+//         {
+//             resultMap.insert(key, unit);
+//         }
+//     }
+//     return resultMap;
+// }
+
+
+
+// QMap<QString, motion_unit> QRC_Manager::GetActiveMotion()
+// {
+//     QMap<QString, motion_unit> resultMap;
+//     // 遍历内部的总 map
+//     for (auto it = m_manager.begin(); it != m_manager.end(); ++it)
+//     {
+//         const QString& key = it.key();
+//         const motion_unit& unit = it.value() ;
+
+//         // ====================== 筛选条件 ======================
+//         // 提取 type == "expression" 的项
+//         if (unit.type == MOTION && unit.isuse)
+//         {
+//             resultMap.insert(key, unit);
+//         }
+//     }
+//     return resultMap;
+// }
 
 
 
@@ -280,7 +224,7 @@ LRESULT CALLBACK GlobalKeyHook::LowLevelKeyboardProc(int nCode, WPARAM wParam, L
         // bool shift = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
 
 
-        auto motions = QRC_Manager::instance().GetQuickKeyMotion(vkCodeToQString(vkCode));
+        auto motions = QRC_Manager::instance().MotionQuery(GetQuickKeyMotion(vkCodeToQString(vkCode));
         for(auto motion:motions){
             if(motion.type == EXPRESSION){
                 LAppLive2DManager::GetInstance()->GetModel(0)->SetExpression(motion.name.toUtf8());

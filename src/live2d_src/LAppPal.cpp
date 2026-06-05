@@ -34,7 +34,6 @@ int LAppPal::s_frame = 0;
 csmByte* LAppPal::LoadFileAsBytes(const string filePath, csmSizeInt* outSize)
 {
     QString absPath = QDir::current().filePath(QString::fromStdString(filePath));
-    qDebug()<<absPath;
     wchar_t wideStr[MAX_PATH];
     MultiByteToWideChar(CP_UTF8, 0U, filePath.c_str(), -1, wideStr, MAX_PATH);
 

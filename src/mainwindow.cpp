@@ -1,6 +1,8 @@
 #include "mainwindow.h"
+#include "cameracontrol.h"
 #include "ui_mainwindow.h"
 
+#include <MainWindow.h>
 #include <QMessageBox>
 
 
@@ -9,26 +11,42 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // setWindowFlag(Qt::FramelessWindowHint); /* 1 */
-    // setAttribute(Qt::WA_TranslucentBackground); /* 2 */
-    // setWindowFlag(Qt::WindowStaysOnTopHint, true);
+
     setAttribute(Qt::WA_TranslucentBackground);
+
     SetAppMode(WINDOW_MODE);
     setMenuBar(nullptr);        // 移除菜单栏
     setStatusBar(nullptr);      // 移除底部状态栏
-    //centralWidget()->layout()->setContentsMargins(0,0,0,0);
-
-
-
     initTray();
     initConfig();
+    initSlots();
 
+    //FaceDetectorThread::instance();
+    //CameraOpen::instance();
+
+    configAct->triggered(true);
+    m_timer = new WatchdogTimer();
+    connect(m_timer,&WatchdogTimer::SignalOntime,this,&MainWindow::ontime);
+    m_timer->start(QThread::LowestPriority);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete cfgwidget;
+
+    qApp->closeAllWindows();
+
+    // 2. 退出主事件循环（最核心）
+    qApp->quit();
+
+    // 3. 强制终止所有子线程（清理卡死线程）
+    qApp->thread()->quit();
+    qApp->thread()->wait();
+
+    // 4. 暴力安全退出（Windows 进程直接结束）
+    QCoreApplication::exit(0);
+
 }
 
 
@@ -85,6 +103,11 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    cfgwidget->close();
+}
+
 
 
 void MainWindow::initTray()
@@ -132,6 +155,13 @@ void MainWindow::initConfig()
 
 }
 
+void MainWindow::initSlots()
+{
+    connect(cfgwidget,&config_widget::SignalStartRender,ui->centralwidget,&MyOpenGL::StartRender);
+    connect(cfgwidget,&config_widget::SignalStopRender,ui->centralwidget,&MyOpenGL::StopRender);
+    connect(cfgwidget,&config_widget::SignalChangeModel,ui->centralwidget,&MyOpenGL::ChangeModel);
+}
+
 
 void MainWindow::SetAppMode(APP_MODE mode)
 {
@@ -143,10 +173,54 @@ void MainWindow::SetAppMode(APP_MODE mode)
         setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
         setWindowFlag(Qt::WindowStaysOnTopHint, false);
         ui->centralwidget->SetMode(WINDOW_MODE);
-        // setAttribute(Qt::WA_AlwaysStackOnTop, false);
-        // setAttribute(Qt::WA_NoSystemBackground,false);
-        // 必须刷新窗口才能生效
     }
     show();
+
+}
+
+void MainWindow::ontime(){
+
+    // if(ConfigManager::instance().getValue(CONFIG_APP_ISOPACITY).toBool()){
+    //     setWindowOpacity(0.0);
+    // }else {
+    //     setWindowOpacity(1.0);
+    // }
+    // auto flags = windowFlags();
+    // setWindowFlags(Qt::Widget);    //临时改标记销毁原生窗口
+    // setWindowFlags(flags);         //还原标记重建窗口
+    // show();                        //刷新窗口
+    // update();
+}
+
+
+
+
+
+
+
+WatchdogTimer::WatchdogTimer(QObject *parent)
+{
+
+}
+
+WatchdogTimer::~WatchdogTimer()
+{
+
+}
+
+void WatchdogTimer::run()
+{
+    m_timer = new QTimer();
+    connect(m_timer,&QTimer::timeout,this,&WatchdogTimer::ontimeout);
+    m_timer->start(1000);
+    exec();
+    delete m_timer;
+}
+
+
+void WatchdogTimer::ontimeout(){
+    emit SignalOntime();
+
+
 
 }

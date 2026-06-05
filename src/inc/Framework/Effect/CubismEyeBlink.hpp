@@ -91,6 +91,9 @@ public:
      */
     void            UpdateParameters(CubismModel* model, csmFloat32 deltaTimeSeconds);
 
+
+    void            ChangeState(CubismModel *model, EyeState state, float changeValue);
+
 private:
 
     CubismEyeBlink(ICubismModelSetting* modelSetting);

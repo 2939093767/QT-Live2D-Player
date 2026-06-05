@@ -103,6 +103,7 @@ public:
      */
     void UpdateParameters(CubismModel* model, csmFloat32 deltaTimeSeconds);
 
+    void ChangeBreathState(CubismModel *model, float value);
 private:
     CubismBreath();
 

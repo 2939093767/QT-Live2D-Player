@@ -8,6 +8,8 @@
 #include "CubismUpdateScheduler.hpp"
 #include "Type/csmVectorSort.hpp"
 
+#include <LAppPal.hpp>
+
 namespace Live2D { namespace Cubism { namespace Framework {
 
 CubismUpdateScheduler::CubismUpdateScheduler()
@@ -42,10 +44,12 @@ void CubismUpdateScheduler::SortUpdatableList()
 
 void CubismUpdateScheduler::OnLateUpdate(CubismModel* model, const csmFloat32 deltaTimeSeconds)
 {
+
     if (_needsSort)
     {
         SortUpdatableList();
     }
+
 
     for (csmUint32 i = 0; i < _cubismUpdatableList.GetSize(); ++i)
     {

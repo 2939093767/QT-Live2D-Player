@@ -1,6 +1,9 @@
 #include "myopenglw.h"
 
+#include "cameracontrol.h"
+
 #include <QGuiApplication>
+#include <QRandomGenerator>
 
 
 
@@ -10,8 +13,8 @@ MyOpenGL::MyOpenGL(QWidget *parent)
 {
 
     t_modelupdate = new QTimer(this);
-    connect(t_modelupdate,&QTimer::timeout,this,&MyOpenGL::modelupdate);
-    t_modelupdate->start((1.0/invertFPS(ConfigManager::instance().getValue(CONFIG_APP_FPS).toInt()))*1000);
+    connect(t_modelupdate,&QTimer::timeout,this,[=]{update();});
+    //t_modelupdate->start((1.0/invertFPS(ConfigManager::instance().getValue(CONFIG_APP_FPS).toInt()))*1000);
 }
 
 MyOpenGL::~MyOpenGL()
@@ -19,38 +22,93 @@ MyOpenGL::~MyOpenGL()
     qApp->quit();
 }
 
+//键鼠控制方式渲染函数
+void MyOpenGL::KeyRenderUpdate()
+{
+    QRect screenRect = QGuiApplication::primaryScreen()->geometry();
+    int screenW = screenRect.width();
+    int screenH = screenRect.height();
+
+    // 当前画布（你的widget）尺寸
+    int canvasW = this->width();
+    int canvasH = this->height();
+
+    // 鼠标屏幕坐标
+    QPoint mouseScreen = QCursor::pos();
+
+    // ==============================================
+    // 核心：屏幕坐标 → 画布坐标（全屏映射）
+    // ==============================================
+    qreal canvasX = (qreal)mouseScreen.x() * canvasW / screenW;
+    qreal canvasY = (qreal)mouseScreen.y() * canvasH / screenH;
+    LAppDelegate::GetInstance()->GetView()->OnTouchesMoved(canvasX,canvasY);
+    LAppDelegate::GetInstance()->update();
+}
+
+
+//面捕控制方式渲染函数
+void MyOpenGL::FaceRenderUpdate()
+{
+    FaceInfo info;
+    LAppDelegate::GetInstance()->update();
+    QRC_Manager::instance().GetFaceInfo(info);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamAngleX,info.yaw);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamAngleY,info.pitch);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamAngleZ,info.roll);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamBodyAngleX,info.yaw/3);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamBodyAngleY,info.pitch/3);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamBodyAngleZ,info.roll/3);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamEyeLOpen,info.left_eye_height);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamEyeROpen,info.right_eye_height);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ChangeValueParamter(Live2D::Cubism::Framework::DefaultParameterId::ParamMouthOpenY,info.mouth_height);
+
+}
+
+
+//初始化
 void MyOpenGL::initializeGL()
 {
+
     try{
         ConfigManager::instance();
-
         LAppDelegate::GetInstance()->Initialize(this);
+        qDebug()<<"初始化结束";
     }catch(const _exception& e){
         qDebug()<<"error";
     }
 
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamAngleX);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamAngleY);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamAngleZ);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamBodyAngleX);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamBodyAngleY);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamBodyAngleZ);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamEyeLOpen);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamEyeROpen);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamEyeLSmile);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamEyeRSmile);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamMouthOpenY);
+    LAppLive2DManager::GetInstance()->GetModel(0)->ShowParamterUpDown(Live2D::Cubism::Framework::DefaultParameterId::ParamMouthForm);
 
 }
 
 void MyOpenGL::resizeGL(int w, int h)
 {
     LAppDelegate::GetInstance()->resize(w,h);
-
-
 }
 
 
 
 void MyOpenGL::paintGL()
 {
-
-    LAppDelegate::GetInstance()->update();
-
-
-
+    if(ConfigManager::instance().getValue(CONFIG_APP_MODEL_CONTROL).toInt() == 1){
+        FaceRenderUpdate();
+    }else if(ConfigManager::instance().getValue(CONFIG_APP_MODEL_CONTROL).toInt() == 0){
+        KeyRenderUpdate();
+    }
+    if(m_isrunning)t_modelupdate->start((1.0/invertFPS(ConfigManager::instance().getValue(CONFIG_APP_FPS).toInt()))*1000);
 }
 
 
@@ -61,8 +119,10 @@ void MyOpenGL::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton){
         qDebug()<<"pressing";
         // LAppDelegate::GetInstance()->GetView()->OnTouchesBegan();
-
     }
+
+
+
 }
 
 
@@ -99,7 +159,8 @@ void MyOpenGL::mouseReleaseEvent(QMouseEvent *event)
 
         if(LAppLive2DManager::GetInstance()->GetModel(0)->IsHit(areaid,lx,ly)){
         // if(LAppDelegate::GetInstance()->GetView()->OnTouchesIsHit(hitarea,lx,ly)){
-            auto expression = QRC_Manager::instance().GetHitareaMotion(hitarea);
+            QMap<QString,motion_unit> expression;
+            QRC_Manager::instance().MotionQuery(MOTION_HITAREAMOTION,hitarea,expression);
 
             for (QString key:expression.keys()) {
                 if(expression[key].type == EXPRESSION){
@@ -142,29 +203,45 @@ const int MyOpenGL::invertFPS(int mode)
 
 void MyOpenGL::modelupdate(){
 
-    QRect screenRect = QGuiApplication::primaryScreen()->geometry();
-    int screenW = screenRect.width();
-    int screenH = screenRect.height();
 
-    // 当前画布（你的widget）尺寸
-    int canvasW = this->width();
-    int canvasH = this->height();
 
-    // 鼠标屏幕坐标
-    QPoint mouseScreen = QCursor::pos();
 
-    // ==============================================
-    // 核心：屏幕坐标 → 画布坐标（全屏映射）
-    // ==============================================
-    qreal canvasX = (qreal)mouseScreen.x() * canvasW / screenW;
-    qreal canvasY = (qreal)mouseScreen.y() * canvasH / screenH;
-    LAppDelegate::GetInstance()->GetView()->OnTouchesMoved(canvasX,canvasY);
 
-    update();
+
+
+}
+
+void MyOpenGL::StartRender()
+{
+
+
+    if(ConfigManager::instance().getValue(CONFIG_APP_MODEL_CONTROL).toInt() == 1){
+        CameraOpen::instance();
+        CameraManager::instance().OpenCamera(0);
+        //FaceDetectorThread::instance().starthandle();
+    }
+
     t_modelupdate->start((1.0/invertFPS(ConfigManager::instance().getValue(CONFIG_APP_FPS).toInt()))*1000);
+    m_isrunning = true;
+
+
+}
+
+void MyOpenGL::StopRender()
+{
+    t_modelupdate->stop();
+    m_isrunning = false;
+    if(ConfigManager::instance().getValue(CONFIG_APP_MODEL_CONTROL).toInt() == 1){
+        CameraManager::instance().StopCamera(0);
+        FaceDetectorThread::instance().stophandle();
+    }
+
 }
 
 
+void MyOpenGL::ChangeModel(){
+    LAppLive2DManager::GetInstance()->ChangeSceneNew();
+}
 
 
 

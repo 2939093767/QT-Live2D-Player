@@ -7,6 +7,7 @@
 
 #include "CubismBreath.hpp"
 #include <math.h>
+#include <qDebug>
 #include "Math/CubismMath.hpp"
 
 namespace Live2D { namespace Cubism { namespace Framework {
@@ -50,6 +51,30 @@ void CubismBreath::UpdateParameters(CubismModel* model, csmFloat32 deltaTimeSeco
 
         model->AddParameterValue(data->ParameterId, data->Offset + (data->Peak * sinf(t / data->Cycle)), data->Weight);
     }
+
+    qDebug()<<"chang breate";
+
+
 }
+
+
+void CubismBreath::ChangeBreathState(CubismModel* model, float value)
+{
+    // _currentTime += value;
+
+    const csmFloat32 t = value * 2.0f * CubismMath::Pi;
+
+    for (csmUint32 i = 0; i < _breathParameters.GetSize(); ++i)
+    {
+        BreathParameterData* data = &_breathParameters[i];
+        qDebug()<<data->Offset + (data->Peak * sinf(t / data->Cycle));
+        // model->AddParameterValue(data->ParameterId, data->Offset + (data->Peak * sinf(t / data->Cycle)), data->Weight);
+        model->AddParameterValue(data->ParameterId,5+(data->Peak * sinf(t / data->Cycle)), data->Weight);
+
+    }
+
+}
+
+
 
 }}}

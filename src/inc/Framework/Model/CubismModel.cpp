@@ -74,6 +74,7 @@ void CubismModel::MultiplyParameterValue(csmInt32 parameterIndex, csmFloat32 val
 void CubismModel::Update() const
 {
     // Update model.
+
     Core::csmUpdateModel(_model);
 
     // Reset dynamic drawable flags.

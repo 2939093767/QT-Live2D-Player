@@ -38,30 +38,17 @@ void config_widget::config_save()
 {
     ui->scrollAreaWidgetContents->save_config();
     ui->scrollAreaWidgetContents_2->save_config();
-    if(!LAppLive2DManager::GetInstance()->SetUpModelNew()){
-        //如果失败恢复默认重新加载
-        QMessageBox::critical(nullptr, "错误", "模型加载失败!恢复默认");
-        return_default();
-    }else{
-        LAppLive2DManager::GetInstance()->ChangeSceneNew();
-        QRC_Manager::instance().ClearManager();
-        foreach (QWidget *widget, this->findChildren<QWidget*>())
-        {
-            if (auto *frame = qobject_cast<config_card*>(widget))
-            {
-                frame->change_ui();
-            }
-        }
-    }
-
+    ui->tab_3->save_config();
+    ConfigManager::instance().sync();
 }
+
+
 
 void config_widget::return_default()
 {
     ConfigManager::instance().initDefaultConfig();
-    LAppLive2DManager::GetInstance()->SetUpModelNew();
-    LAppLive2DManager::GetInstance()->ChangeSceneNew();
-    QRC_Manager::instance().ClearManager();
+    QRC_Manager::instance().ClearMotion();
+
     foreach (QWidget *widget, this->findChildren<QWidget*>())
     {
         if (auto *frame = qobject_cast<config_card*>(widget))
@@ -76,6 +63,21 @@ void config_widget::software_restart()
 {
     qApp->quit();
     QProcess::startDetached(qApp->applicationFilePath());
+}
+
+void config_widget::StartRender()
+{
+    //config_save();
+    emit SignalStartRender();
+    ui->pushButton_4->setEnabled(false);
+    ui->pushButton_5->setEnabled(true);
+}
+
+void config_widget::StopRender()
+{
+    emit SignalStopRender();
+    ui->pushButton_4->setEnabled(true);
+    ui->pushButton_5->setEnabled(false);
 }
 
 
@@ -186,6 +188,11 @@ AppWidget::AppWidget(QWidget *parent)
     ui(new Ui::AppWidget)
 {
     ui->setupUi(this);
+    ui->label_4->setText(R"(
+        注意:
+        1、本页设置保存后生效
+        2、切换模型请在保存后重启APP
+    )");
 }
 
 
@@ -200,10 +207,14 @@ void AppWidget::change_ui()
     p_config_widgets.clear();
     ui->checkBox->setChecked(ConfigManager::instance().getValue(CONFIG_APP_SOFT_START).toBool());
     p_config_widgets[CONFIG_APP_SOFT_START] = ui->checkBox;
+    // ui->checkBox_2->setChecked(ConfigManager::instance().getValue(CONFIG_APP_ISOPACITY).toBool());
+    // p_config_widgets[CONFIG_APP_ISOPACITY] = ui->checkBox_2;
     ui->comboBox->setCurrentIndex(ConfigManager::instance().getValue(CONFIG_APP_MODEL_CONTROL).toInt());
     p_config_widgets[CONFIG_APP_MODEL_CONTROL] = ui->comboBox;
     ui->comboBox_2->setCurrentIndex(ConfigManager::instance().getValue(CONFIG_APP_FPS).toInt());
     p_config_widgets[CONFIG_APP_FPS] = ui->comboBox_2;
+    ui->lineEdit->setText(ConfigManager::instance().getValue(CONFIG_MODEL_FOLDER).toString());
+    p_config_widgets[CONFIG_MODEL_FOLDER] = ui->lineEdit;
 }
 
 
@@ -233,12 +244,30 @@ void AppWidget::save_config()
         ConfigManager::instance().setValue(key,member);
         qDebug()<<key << " : "<<member;
     }
+    ConfigManager::instance().setAutoStart(ui->checkBox->isChecked());
+
 }
 
 void AppWidget::return_default()
 {
 
 }
+
+void AppWidget::folder_choose()
+{
+    QString folderPath = QFileDialog::getExistingDirectory(
+        this,
+        "选择文件夹",          // 弹窗标题
+        QCoreApplication::applicationDirPath(), // 默认打开路径
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
+    if(folderPath != ""){
+        ui->lineEdit->setText(folderPath);
+    }
+
+
+}
+
 
 
 
@@ -289,8 +318,8 @@ void ModelWidget::change_ui()
     p_config_widgets.clear();
 
 
-    ui->comboBox->setCurrentText(ConfigManager::instance().getValue(CONFIG_MODEL_FOLDER).toString());
-    p_config_widgets[CONFIG_MODEL_FOLDER] = ui->comboBox;
+    //ui->comboBox->setCurrentText(ConfigManager::instance().getValue(CONFIG_MODEL_FOLDER).toString());
+    //p_config_widgets[CONFIG_MODEL_FOLDER] = ui->comboBox;
 
     auto expressionNames = LAppLive2DManager::GetInstance()->GetModel(0)->GetExpressionNames();
     auto motions= LAppLive2DManager::GetInstance()->GetModel(0)->GetMotionNames();
@@ -302,14 +331,14 @@ void ModelWidget::change_ui()
         unit.name = QString::fromStdString(expressionNames[i].GetRawString());
         unit.type = EXPRESSION;
         add_expression(unit.name);
-        QRC_Manager::instance().AddMotion(unit.name,unit);
+        QRC_Manager::instance().ChangeMotionValue(unit.name,unit);
     }
     for(int i=0;i<motions.GetSize();i++){
         motion_unit unit;
         unit.name = QString::fromStdString(motions[i].GetRawString());
         unit.type = MOTION;
         add_motions(unit.name);
-        QRC_Manager::instance().AddMotion(unit.name,unit);;
+        QRC_Manager::instance().ChangeMotionValue(unit.name,unit);
     }
 
 }
@@ -373,8 +402,12 @@ void ModelWidget::add_expression(QString text)
     button->setCheckable(true);
     connect(button,&QPushButton::toggled,this,&ModelWidget::QuickkeyUpdate);
     QCheckBox *checkBtn = new QCheckBox("该项禁用");
+
     connect(checkBtn,&QCheckBox::clicked,this,[=](bool clicked){
-        QRC_Manager::instance().Motionisuse(text,!clicked);
+        QMap<QString,motion_unit> value;
+        QRC_Manager::instance().MotionQuery(MOTION_ONCEMOTION,text,value);
+        value[text].isuse = !clicked;
+        QRC_Manager::instance().ChangeMotionValue(text,value[text]);
     });
 
     QComboBox* hitarea = new QComboBox();
@@ -420,8 +453,12 @@ void ModelWidget::add_motions(QString text)
     button->setCheckable(true);
     connect(button,&QPushButton::toggled,this,&ModelWidget::QuickkeyUpdate);
     QCheckBox *checkBtn = new QCheckBox("该项禁用");
+
     connect(checkBtn,&QCheckBox::clicked,this,[=](bool clicked){
-        QRC_Manager::instance().Motionisuse(text,!clicked);
+        QMap<QString,motion_unit> value;
+        QRC_Manager::instance().MotionQuery(MOTION_ONCEMOTION,text,value);
+        value[text].isuse = !clicked;
+        QRC_Manager::instance().ChangeMotionValue(text,value[text]);
     });
 
     QComboBox* hitarea = new QComboBox();
@@ -453,23 +490,7 @@ void ModelWidget::add_motions(QString text)
 
 
 
-void ModelWidget::folder_choose()
-{
-    QString folderPath = QFileDialog::getExistingDirectory(
-        this,
-        "选择文件夹",          // 弹窗标题
-        QCoreApplication::applicationDirPath(), // 默认打开路径
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-    );
-    if(folderPath != ""){
-        ui->comboBox->setCurrentText(folderPath);
-        if(ui->comboBox->findText(folderPath) != -1){
-            ui->comboBox->addItem(folderPath);
-        }
-    }
 
-
-}
 
 
 void ModelWidget::QuickkeyUpdate(bool clicked)
@@ -488,13 +509,17 @@ void ModelWidget::QuickkeyUpdate(bool clicked)
     QComboBox* edit_1 = qobject_cast<QComboBox*>(layout->itemAt(btnIndex - 1)->widget());
     QComboBox* edit_2 = qobject_cast<QComboBox*>(layout->itemAt(btnIndex - 2)->widget());
     QLabel* edit_3 = qobject_cast<QLabel*>(layout->itemAt(btnIndex - 3)->widget());
-    motion_unit unit = QRC_Manager::instance().GetALLMotion(edit_3->text());
+    QMap<QString,motion_unit> value;
+    QRC_Manager::instance().MotionQuery(MOTION_ONCEMOTION,edit_3->text(),value);
+    motion_unit unit = value[edit_3->text()];
+
     unit.hitarea = edit_2->currentText();
     unit.quickkey = edit_1->currentText();
     unit.quickkey_isuse = clicked;
+
     qDebug()<<unit.hitarea<<unit.quickkey_isuse;
     //添加动作
-    QRC_Manager::instance().AddMotion(unit.name,unit);
+    QRC_Manager::instance().ChangeMotionValue(unit.name,unit);
 }
 
 
@@ -507,7 +532,8 @@ void ModelWidget::expression_israndom(bool clicked)
         QFuture<void> future = QtConcurrent::run([=](){
             while (israndom_ex)
             {
-                auto expression = QRC_Manager::instance().GetActiveExpression();
+                QMap<QString,motion_unit> expression;
+                QRC_Manager::instance().MotionQuery(MOTION_ACTIVEEXPRESSION,"",expression);
                 int randomIndex = QRandomGenerator::global()->bounded(expression.size());
                 auto it = expression.begin() + randomIndex;
                 LAppLive2DManager::GetInstance()->GetModel(0)->SetExpression(it->name.toUtf8());
@@ -528,7 +554,8 @@ void ModelWidget::motion_israndom(bool clicked)
         QFuture<void> future = QtConcurrent::run([=](){
             while (israndom_mo)
             {
-                auto expression = QRC_Manager::instance().GetActiveMotion();
+                QMap<QString,motion_unit> expression;
+                QRC_Manager::instance().MotionQuery(MOTION_ACTIVEMOTION,"",expression);
                 int randomIndex = QRandomGenerator::global()->bounded(expression.size());
                 auto it = expression.begin() + randomIndex;
                 QStringList parts = it->name.split('_');

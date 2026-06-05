@@ -54,6 +54,10 @@ public:
      */
     virtual void OnLateUpdate(CubismModel* model, csmFloat32 deltaTimeSeconds) override;
 
+    void ChangeEyeState(CubismModel *model, CubismEyeBlink::EyeState state, csmFloat32 value);
+
+
+
 private:
     const csmBool& _motionUpdated;
     CubismEyeBlink& _eyeBlink;

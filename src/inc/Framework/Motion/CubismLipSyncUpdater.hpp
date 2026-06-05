@@ -54,9 +54,13 @@ public:
      */
     virtual void OnLateUpdate(CubismModel* model, csmFloat32 deltaTimeSeconds) override;
 
+
+    void ChangeValue(const csmFloat32 value);
 private:
     IParameterProvider& _wavFileHandler;
     const csmVector<CubismIdHandle>& _lipSyncIds;
+    bool usewav=false;
+    csmFloat32 customvalue=0.0f;
 };
 
 }}}

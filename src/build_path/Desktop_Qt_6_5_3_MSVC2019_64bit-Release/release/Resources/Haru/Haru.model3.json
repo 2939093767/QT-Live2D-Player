@@ -7,6 +7,7 @@
 			"Haru.2048/texture_01.png"
 		],
 		"Physics": "Haru.physics3.json",
+		"UserData": "Haru.userdata3.json",
 		"Pose": "Haru.pose3.json",
 		"DisplayInfo": "Haru.cdi3.json",
 		"Expressions": [
@@ -41,6 +42,10 @@
 			{
 				"Name": "F08",
 				"File": "expressions/F08.exp3.json"
+			},
+			{
+				"Name": "expression1",
+				"File": "expression1.exp3.json"
 			}
 		],
 		"Motions": {
@@ -59,31 +64,30 @@
 			"TapBody": [
 				{
 					"File": "motions/haru_g_m26.motion3.json",
+					"Sound": "sounds/haru_talk_13.wav",
 					"FadeInTime": 0.5,
-					"FadeOutTime": 0.5,
-					"Sound": "sounds/haru_talk_13.wav"
+					"FadeOutTime": 0.5
 				},
 				{
 					"File": "motions/haru_g_m06.motion3.json",
+					"Sound": "sounds/haru_Info_14.wav",
 					"FadeInTime": 0.5,
-					"FadeOutTime": 0.5,
-					"Sound": "sounds/haru_Info_14.wav"
+					"FadeOutTime": 0.5
 				},
 				{
 					"File": "motions/haru_g_m20.motion3.json",
+					"Sound": "sounds/haru_normal_6.wav",
 					"FadeInTime": 0.5,
-					"FadeOutTime": 0.5,
-					"Sound": "sounds/haru_normal_6.wav"
+					"FadeOutTime": 0.5
 				},
 				{
 					"File": "motions/haru_g_m09.motion3.json",
+					"Sound": "sounds/haru_Info_04.wav",
 					"FadeInTime": 0.5,
-					"FadeOutTime": 0.5,
-					"Sound": "sounds/haru_Info_04.wav"
+					"FadeOutTime": 0.5
 				}
 			]
-		},
-		"UserData": "Haru.userdata3.json"
+		}
 	},
 	"Groups": [
 		{

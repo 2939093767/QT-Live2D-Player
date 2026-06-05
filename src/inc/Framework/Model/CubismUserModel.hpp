@@ -11,6 +11,7 @@
 #include "Effect/CubismEyeBlink.hpp"
 #include "Effect/CubismBreath.hpp"
 #include "Effect/CubismLook.hpp"
+
 #include "Math/CubismModelMatrix.hpp"
 #include "Math/CubismTargetPoint.hpp"
 #include "Model/CubismMoc.hpp"

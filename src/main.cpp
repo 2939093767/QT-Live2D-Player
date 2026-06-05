@@ -1,8 +1,12 @@
+
+#define NOMINMAX
 #include "mainwindow.h"
 
 #include <QApplication>
 #include <QFile>
 #include <config_setting.h>
+
+
 
 int main(int argc, char *argv[])
 {

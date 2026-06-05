@@ -12,9 +12,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 
-
-
-#include "config_setting.h"
+#include <ConfigManager/configini.h>
 #include "CustomWidget.h"
 
 #include "LAppModel.hpp"
@@ -59,7 +57,12 @@ public slots:
     void config_save();
     void return_default();
     void software_restart();
-
+    void StartRender();
+    void StopRender();
+signals:
+    void SignalStartRender();
+    void SignalStopRender();
+    void SignalChangeModel();
 protected:
     void paintEvent(QPaintEvent *event) override;
     void showEvent(QShowEvent *event) override;
@@ -109,6 +112,12 @@ public:
     void save_config()override;
     void return_default()override;
     void image_choose(QString name,QLineEdit* ui);
+
+public:
+    void StartRender();
+public slots:
+    void folder_choose();
+
 private:
     Ui::AppWidget  *ui;
 
@@ -132,22 +141,12 @@ public:
     void change_ui()override;
     void save_config()override;
     void return_default()override;
-
     void image_choose(QString name,QLineEdit* ui);
-
     void add_expression(QString text);
     void add_motions(QString text);
-
-
     const void RegisterglobalhotKey(int id, int MOD_KEY, int key = 0);
 
-
-// protected:
-//     bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
-
-
 public slots:
-    void folder_choose();
     void QuickkeyUpdate(bool clicked);
     void expression_israndom(bool clicked);
     void motion_israndom(bool clicked);

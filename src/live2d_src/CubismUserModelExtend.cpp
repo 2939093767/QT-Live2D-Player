@@ -158,8 +158,8 @@ void CubismUserModelExtend::SetupModel(csmUint32 width, csmUint32 height)
         lookParameters.PushBack(CubismLook::LookParameterData(_idParamAngleY, 0.0f, 30.0f));
         lookParameters.PushBack(CubismLook::LookParameterData(_idParamAngleZ, 0.0f, 0.0f, -30.0f));
         lookParameters.PushBack(CubismLook::LookParameterData(_idParamBodyAngleX, 10.0f));
-        lookParameters.PushBack(CubismLook::LookParameterData(_idParamEyeBallX, 1.0f));
-        lookParameters.PushBack(CubismLook::LookParameterData(_idParamEyeBallY, 0.0f, 1.0f));
+        lookParameters.PushBack(CubismLook::LookParameterData(_idParamEyeBallX, 0.0f));
+        lookParameters.PushBack(CubismLook::LookParameterData(_idParamEyeBallY, 0.0f, 0.0f));
 
         _look->SetParameters(lookParameters);
 

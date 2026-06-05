@@ -13,39 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0,0,0,1">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>模型文件夹路径：</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBox">
-       <property name="editable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>浏览</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0,0,0,1">
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -165,22 +133,6 @@
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>pressed()</signal>
-   <receiver>ModelWidget</receiver>
-   <slot>folder_choose()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>513</x>
-     <y>18</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>546</x>
-     <y>16</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>radioButton_2</sender>
    <signal>clicked(bool)</signal>

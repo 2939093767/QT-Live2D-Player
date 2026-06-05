@@ -113,7 +113,6 @@ bool LAppDelegate::Initialize(MyOpenGL* window)
 
     //AppViewの初期化
     _view->Initialize(_windowWidth, _windowHeight);
-
     return GL_TRUE;
 }
 

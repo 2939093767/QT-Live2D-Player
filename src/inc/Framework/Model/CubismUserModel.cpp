@@ -17,6 +17,7 @@ CubismUserModel::CubismUserModel()
     , _motionManager(NULL)
     , _expressionManager(NULL)
     , _eyeBlink(NULL)
+
     , _breath(NULL)
     , _modelMatrix(NULL)
     , _pose(NULL)
@@ -290,7 +291,7 @@ void CubismUserModel::CreateRenderer(csmUint32 width, csmUint32 height, csmInt32
         DeleteRenderer();
     }
     _renderer = Rendering::CubismRenderer::Create(width, height);
-
+    //
     _renderer->Initialize(_model, maskBufferCount);
 }
 

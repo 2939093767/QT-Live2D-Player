@@ -11,11 +11,9 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
@@ -28,11 +26,6 @@ class Ui_ModelWidget
 {
 public:
     QVBoxLayout *verticalLayout;
-    QHBoxLayout *horizontalLayout;
-    QLabel *label;
-    QComboBox *comboBox;
-    QPushButton *pushButton;
-    QFrame *line;
     QLabel *label_2;
     QHBoxLayout *horizontalLayout_3;
     QRadioButton *radioButton;
@@ -56,35 +49,6 @@ public:
         ModelWidget->resize(548, 402);
         verticalLayout = new QVBoxLayout(ModelWidget);
         verticalLayout->setObjectName("verticalLayout");
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName("horizontalLayout");
-        label = new QLabel(ModelWidget);
-        label->setObjectName("label");
-
-        horizontalLayout->addWidget(label);
-
-        comboBox = new QComboBox(ModelWidget);
-        comboBox->setObjectName("comboBox");
-        comboBox->setEditable(true);
-
-        horizontalLayout->addWidget(comboBox);
-
-        pushButton = new QPushButton(ModelWidget);
-        pushButton->setObjectName("pushButton");
-
-        horizontalLayout->addWidget(pushButton);
-
-        horizontalLayout->setStretch(1, 1);
-
-        verticalLayout->addLayout(horizontalLayout);
-
-        line = new QFrame(ModelWidget);
-        line->setObjectName("line");
-        line->setFrameShape(QFrame::HLine);
-        line->setFrameShadow(QFrame::Sunken);
-
-        verticalLayout->addWidget(line);
-
         label_2 = new QLabel(ModelWidget);
         label_2->setObjectName("label_2");
 
@@ -168,11 +132,10 @@ public:
 
         verticalLayout->addWidget(widget_2);
 
-        verticalLayout->setStretch(4, 1);
-        verticalLayout->setStretch(8, 1);
+        verticalLayout->setStretch(2, 1);
+        verticalLayout->setStretch(6, 1);
 
         retranslateUi(ModelWidget);
-        QObject::connect(pushButton, SIGNAL(pressed()), ModelWidget, SLOT(folder_choose()));
         QObject::connect(radioButton_2, SIGNAL(clicked(bool)), ModelWidget, SLOT(motion_israndom(bool)));
         QObject::connect(radioButton, SIGNAL(clicked(bool)), ModelWidget, SLOT(expression_israndom(bool)));
 
@@ -182,8 +145,6 @@ public:
     void retranslateUi(QWidget *ModelWidget)
     {
         ModelWidget->setWindowTitle(QCoreApplication::translate("ModelWidget", "Form", nullptr));
-        label->setText(QCoreApplication::translate("ModelWidget", "\346\250\241\345\236\213\346\226\207\344\273\266\345\244\271\350\267\257\345\276\204\357\274\232", nullptr));
-        pushButton->setText(QCoreApplication::translate("ModelWidget", "\346\265\217\350\247\210", nullptr));
         label_2->setText(QCoreApplication::translate("ModelWidget", "\350\241\250\346\203\205\347\256\241\347\220\206", nullptr));
         radioButton->setText(QCoreApplication::translate("ModelWidget", "\351\232\217\346\234\272\350\241\250\346\203\205\345\210\267\346\226\260", nullptr));
         label_4->setText(QCoreApplication::translate("ModelWidget", "s/time", nullptr));

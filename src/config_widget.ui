@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -73,10 +73,32 @@
        </item>
       </layout>
      </widget>
+     <widget class="CameraControl" name="tab_3">
+      <attribute name="title">
+       <string>摄像机</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="text">
+        <string>启动渲染</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>停止渲染</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
@@ -94,7 +116,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_3">
        <property name="text">
-        <string>软件重启</string>
+        <string>APP重启</string>
        </property>
       </widget>
      </item>
@@ -115,6 +137,12 @@
    <header>config_widget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>CameraControl</class>
+   <extends>QWidget</extends>
+   <header>FaceHandle/camerawidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -125,7 +153,7 @@
    <slot>config_save()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
+     <x>567</x>
      <y>683</y>
     </hint>
     <hint type="destinationlabel">
@@ -141,7 +169,7 @@
    <slot>return_default()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>534</x>
+     <x>804</x>
      <y>683</y>
     </hint>
     <hint type="destinationlabel">
@@ -166,10 +194,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>pressed()</signal>
+   <receiver>config_widget</receiver>
+   <slot>StartRender()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>674</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>700</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>pressed()</signal>
+   <receiver>config_widget</receiver>
+   <slot>StopRender()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>322</x>
+     <y>676</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>698</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>config_save()</slot>
   <slot>return_default()</slot>
   <slot>software_restart()</slot>
+  <slot>StartRender()</slot>
+  <slot>StopRender()</slot>
  </slots>
 </ui>

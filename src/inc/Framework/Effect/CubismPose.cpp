@@ -8,6 +8,8 @@
 #include "CubismPose.hpp"
 #include "Id/CubismIdManager.hpp"
 
+#include <LAppPal.hpp>
+
 using namespace Live2D::Cubism::Framework;
 
 namespace Live2D { namespace Cubism { namespace Framework {
@@ -299,6 +301,7 @@ void CubismPose::DoFade(CubismModel* model, csmFloat32 deltaTimeSeconds, csmInt3
 void CubismPose::UpdateParameters(CubismModel* model, csmFloat32 deltaTimeSeconds)
 {
     // 前回のモデルと同じではないときは初期化が必要
+    LAppPal::PrintLogLn("POSE change");
     if (model != _lastModel)
     {
         // パラメータインデックスの初期化

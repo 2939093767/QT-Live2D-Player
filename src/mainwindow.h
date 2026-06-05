@@ -27,7 +27,7 @@ QT_END_NAMESPACE
 
 
 
-
+class WatchdogTimer;
 
 class MainWindow : public QMainWindow
 {
@@ -38,15 +38,18 @@ public:
     ~MainWindow();
     void initTray();
     void initConfig();
+    void initSlots();
     void SetAppMode(APP_MODE mode);
 
+public slots:
+    void ontime();
 protected:
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
-
+    void closeEvent(QCloseEvent* event) override;
 
 private:
     QPoint m_lastPos;
@@ -62,11 +65,37 @@ private:
 
     Ui::MainWindow *ui;
     config_widget* cfgwidget;
+
+    WatchdogTimer* m_timer;
 };
 
 
 
 
+
+
+class WatchdogTimer:public QThread
+{
+    Q_OBJECT
+
+
+public:
+    WatchdogTimer(QObject *parent=nullptr);
+    ~WatchdogTimer();
+    void run()override;
+
+
+
+public slots:
+    void ontimeout();
+signals:
+    void SignalOntime();
+private:
+    QTimer* m_timer;
+    //图像采集相关
+
+
+};
 
 
 

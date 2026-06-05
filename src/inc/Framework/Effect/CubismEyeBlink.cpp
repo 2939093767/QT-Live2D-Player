@@ -7,6 +7,7 @@
 
 #include "CubismEyeBlink.hpp"
 #include "Id/CubismId.hpp"
+#include <LAppPal.hpp>
 #include <stdlib.h>
 
 namespace Live2D { namespace Cubism { namespace Framework {
@@ -84,7 +85,7 @@ void CubismEyeBlink::UpdateParameters(CubismModel* model, csmFloat32 deltaTimeSe
     _userTimeSeconds += deltaTimeSeconds;
     csmFloat32 parameterValue;
     csmFloat32 t = 0.0f;
-
+    LAppPal::PrintLogLn("eye change");
     switch (_blinkingState)
     {
     case EyeState_Closing:
@@ -153,8 +154,31 @@ void CubismEyeBlink::UpdateParameters(CubismModel* model, csmFloat32 deltaTimeSe
     for (csmUint32 i = 0; i < _parameterIds.GetSize(); ++i)
     {
         model->SetParameterValue(_parameterIds[i], parameterValue);
+
     }
+
 }
+
+
+void CubismEyeBlink::ChangeState(CubismModel* model, EyeState state , float changeValue){
+
+    _blinkingState = state;
+    csmFloat32 parameterValue = changeValue;
+
+    if (!CloseIfZero)
+    {
+        parameterValue = -parameterValue;
+    }
+    for (csmUint32 i = 0; i < _parameterIds.GetSize(); ++i)
+    {
+        model->SetParameterValue(_parameterIds[i], changeValue);
+    }
+
+}
+
+
+
+
 
 }}}
 

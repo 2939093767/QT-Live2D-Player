@@ -7,6 +7,9 @@
 
 #include "CubismEyeBlinkUpdater.hpp"
 
+#include <qDebug>
+
+
 namespace Live2D { namespace Cubism { namespace Framework {
 
 CubismEyeBlinkUpdater::CubismEyeBlinkUpdater(const csmBool& motionUpdated, CubismEyeBlink& eyeBlink)
@@ -25,6 +28,7 @@ CubismEyeBlinkUpdater::CubismEyeBlinkUpdater(const csmBool& motionUpdated, Cubis
 
 void CubismEyeBlinkUpdater::OnLateUpdate(CubismModel* model, csmFloat32 deltaTimeSeconds)
 {
+    qDebug()<<"OnLate Upedate";
     if (model == nullptr)
     {
         return;
@@ -37,5 +41,25 @@ void CubismEyeBlinkUpdater::OnLateUpdate(CubismModel* model, csmFloat32 deltaTim
         _eyeBlink.UpdateParameters(model, deltaTimeSeconds);
     }
 }
+
+
+void CubismEyeBlinkUpdater::ChangeEyeState(CubismModel* model, CubismEyeBlink::EyeState state, csmFloat32 value)
+{
+    if (model == nullptr)
+    {
+        return;
+    }
+
+    if (!_motionUpdated)
+    {
+        // メインモーションの更新がないとき
+        // 目パチ
+        qDebug()<<"更新";
+        _eyeBlink.ChangeState(model,state,value);
+        //_eyeBlink.UpdateParameters(model, deltaTimeSeconds);
+    }
+}
+
+
 
 }}}

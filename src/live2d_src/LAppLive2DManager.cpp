@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 #include <Rendering/CubismRenderer.hpp>
 #include <Rendering/OpenGL/CubismOffscreenManager_OpenGLES2.hpp>
+#include <ConfigManager/configini.h>
 #include "LAppPal.hpp"
 #include "LAppDefine.hpp"
 #include "LAppDelegate.hpp"
@@ -72,6 +73,7 @@ LAppLive2DManager::LAppLive2DManager()
     SetUpModelNew();
 
     ChangeScene(_sceneIndex);
+
 }
 
 LAppLive2DManager::~LAppLive2DManager()

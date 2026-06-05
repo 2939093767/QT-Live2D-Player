@@ -17,6 +17,7 @@
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "FaceHandle/camerawidget.h"
 #include "config_widget.h"
 
 QT_BEGIN_NAMESPACE
@@ -34,7 +35,10 @@ public:
     QVBoxLayout *verticalLayout_3;
     QScrollArea *scrollArea_2;
     ModelWidget *scrollAreaWidgetContents_2;
+    CameraControl *tab_3;
     QHBoxLayout *horizontalLayout;
+    QPushButton *pushButton_4;
+    QPushButton *pushButton_5;
     QPushButton *pushButton;
     QPushButton *pushButton_2;
     QPushButton *pushButton_3;
@@ -80,11 +84,25 @@ public:
         verticalLayout_3->addWidget(scrollArea_2);
 
         tabWidget->addTab(tab_2, QString());
+        tab_3 = new CameraControl();
+        tab_3->setObjectName("tab_3");
+        tabWidget->addTab(tab_3, QString());
 
         verticalLayout->addWidget(tabWidget);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName("horizontalLayout");
+        pushButton_4 = new QPushButton(config_widget);
+        pushButton_4->setObjectName("pushButton_4");
+
+        horizontalLayout->addWidget(pushButton_4);
+
+        pushButton_5 = new QPushButton(config_widget);
+        pushButton_5->setObjectName("pushButton_5");
+        pushButton_5->setEnabled(true);
+
+        horizontalLayout->addWidget(pushButton_5);
+
         pushButton = new QPushButton(config_widget);
         pushButton->setObjectName("pushButton");
 
@@ -108,8 +126,10 @@ public:
         QObject::connect(pushButton, SIGNAL(pressed()), config_widget, SLOT(config_save()));
         QObject::connect(pushButton_2, SIGNAL(pressed()), config_widget, SLOT(return_default()));
         QObject::connect(pushButton_3, SIGNAL(pressed()), config_widget, SLOT(software_restart()));
+        QObject::connect(pushButton_4, SIGNAL(pressed()), config_widget, SLOT(StartRender()));
+        QObject::connect(pushButton_5, SIGNAL(pressed()), config_widget, SLOT(StopRender()));
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(config_widget);
@@ -120,9 +140,12 @@ public:
         config_widget->setWindowTitle(QCoreApplication::translate("config_widget", "Form", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("config_widget", "APP\350\256\276\347\275\256", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("config_widget", "\346\250\241\345\236\213\347\256\241\347\220\206", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("config_widget", "\346\221\204\345\203\217\346\234\272", nullptr));
+        pushButton_4->setText(QCoreApplication::translate("config_widget", "\345\220\257\345\212\250\346\270\262\346\237\223", nullptr));
+        pushButton_5->setText(QCoreApplication::translate("config_widget", "\345\201\234\346\255\242\346\270\262\346\237\223", nullptr));
         pushButton->setText(QCoreApplication::translate("config_widget", "\350\256\276\347\275\256\344\277\235\345\255\230", nullptr));
         pushButton_2->setText(QCoreApplication::translate("config_widget", "\346\201\242\345\244\215\351\273\230\350\256\244", nullptr));
-        pushButton_3->setText(QCoreApplication::translate("config_widget", "\350\275\257\344\273\266\351\207\215\345\220\257", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("config_widget", "APP\351\207\215\345\220\257", nullptr));
     } // retranslateUi
 
 };

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CameraControl</class>
+ <widget class="QWidget" name="CameraControl">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>957</width>
+    <height>602</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,1">
+   <item>
+    <widget class="ImageShow" name="openGLWidget"/>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
+     <item row="6" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>面捕分辨率：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>画面截取：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>动作平滑度：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>移动灵敏度：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>效果测试</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>摄像头：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSlider" name="horizontalSlider_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="comboBox"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>未启用</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="comboBox_2">
+       <item>
+        <property name="text">
+         <string>1920x1080</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>960x540</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>480x270</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QSlider" name="horizontalSlider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageShow</class>
+   <extends>QOpenGLWidget</extends>
+   <header>cameracontrol.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>CameraControl</receiver>
+   <slot>ChangeOpenState(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>946</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>865</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>pressed()</signal>
+   <receiver>CameraControl</receiver>
+   <slot>FrameCapture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>882</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>958</x>
+     <y>105</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>CameraControl</receiver>
+   <slot>MotionSensitivty()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>916</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>135</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_2</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>CameraControl</receiver>
+   <slot>MotionSmooth()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>946</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>197</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_2</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CameraControl</receiver>
+   <slot>ImageChange(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>892</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>958</x>
+     <y>78</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>ChangeOpenState(bool)</slot>
+  <slot>FrameCapture()</slot>
+  <slot>Resetdefault()</slot>
+  <slot>MotionSensitivty()</slot>
+  <slot>MotionOffset()</slot>
+  <slot>MotionSmooth()</slot>
+  <slot>ImageChange(int)</slot>
+ </slots>
+</ui>

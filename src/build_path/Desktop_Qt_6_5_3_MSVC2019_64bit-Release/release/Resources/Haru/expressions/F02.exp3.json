@@ -30,6 +30,11 @@
 			"Id": "ParamEyeForm",
 			"Value": 0.54,
 			"Blend": "Add"
+		},
+		{
+			"Id": "ParamMouthForm",
+			"Value": -0.97,
+			"Blend": "Add"
 		}
 	]
 }
