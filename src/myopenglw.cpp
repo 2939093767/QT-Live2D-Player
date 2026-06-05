@@ -1,7 +1,6 @@
 #include "myopenglw.h"
 
-#include "cameracontrol.h"
-
+#include "FaceHandle/cameracontrol.h"
 #include <QGuiApplication>
 #include <QRandomGenerator>
 

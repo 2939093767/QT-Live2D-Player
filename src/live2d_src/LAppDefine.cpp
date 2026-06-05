@@ -7,7 +7,7 @@
 
 #include "LAppDefine.hpp"
 #include <CubismFramework.hpp>
-#include "config_setting.h"
+// #include "config_setting.h"
 
 
 namespace LAppDefine {

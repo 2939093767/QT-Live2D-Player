@@ -4,7 +4,7 @@
 
 #include <QApplication>
 #include <QFile>
-#include <config_setting.h>
+// #include <config_setting.h>
 
 
 
