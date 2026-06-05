@@ -205,7 +205,7 @@ void LAppModel::SetupModel(ICubismModelSetting* setting)
             _eyeBlink = CubismEyeBlink::Create(_modelSetting);
 
             CubismEyeBlinkUpdater* eyeBlink = CSM_NEW CubismEyeBlinkUpdater(_motionUpdated, *_eyeBlink);
-            //_updateScheduler.AddUpdatableList(eyeBlink);
+            _updateScheduler.AddUpdatableList(eyeBlink);
         }
     }
 
@@ -259,7 +259,7 @@ void LAppModel::SetupModel(ICubismModelSetting* setting)
             qDebug()<<_modelSetting->GetLipSyncParameterId(i)->GetString().GetRawString();
         }
         CubismLipSyncUpdater* lipSync = CSM_NEW CubismLipSyncUpdater(_lipSyncIds, _wavFileHandler);
-        //_updateScheduler.AddUpdatableList(lipSync);
+        _updateScheduler.AddUpdatableList(lipSync);
         //_mouthMotionManager->StartMotionPriority(lipsyncMotion, true, priority);
     }
 
@@ -409,9 +409,9 @@ void LAppModel::Update()
     }
     else
     {
-        //_motionUpdated = _motionManager->UpdateMotion(_model, deltaTimeSeconds); // モーションを更新
+        _motionUpdated = _motionManager->UpdateMotion(_model, deltaTimeSeconds); // モーションを更新
     }
-    _mouthMotionManager->UpdateMotion(_model, deltaTimeSeconds); // <<< 追加
+    //_mouthMotionManager->UpdateMotion(_model, deltaTimeSeconds); // <<< 追加
 
     _model->SaveParameters(); // 状態を保存
 
