@@ -192,6 +192,7 @@ AppWidget::AppWidget(QWidget *parent)
         注意:
         1、本页设置保存后生效
         2、切换模型请在保存后重启APP
+        3、模型目录选择为moc3文件的上层目录
     )");
 }
 
@@ -573,28 +574,4 @@ void ModelWidget::motion_israndom(bool clicked)
 
 
 
-// bool ModelWidget::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
-// {
-//     Q_UNUSED(eventType)
-
-//     MSG* msg = reinterpret_cast<MSG*>(message);
-//     if (msg->message == WM_HOTKEY)
-//     {
-//         int vk = LOWORD(msg->lParam);       // 按键码 如 VK_A, '1', etc
-//         int mod = HIWORD(msg->lParam);     // 修饰键 Ctrl/Alt/Shift
-
-
-//         int hotId = static_cast<int>(msg->wParam);
-//
-
-
-//         // 3. 补发键盘消息 → 让系统正常输入字符（关键！）
-//         keybd_event((BYTE)vk, 0, 0, 0);        // 按下
-//         keybd_event((BYTE)vk, 0, KEYEVENTF_KEYUP, 0); // 松开
-
-//         // 4. 必须返回 true，表示我们处理了
-//         return true;
-//     }
-//     return false;
-// }
 

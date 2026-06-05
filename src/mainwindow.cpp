@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "cameracontrol.h"
+#include "FaceHandle/cameracontrol.h"
 #include "ui_mainwindow.h"
 
 #include <MainWindow.h>
@@ -42,7 +42,7 @@ MainWindow::~MainWindow()
 
     // 3. 强制终止所有子线程（清理卡死线程）
     qApp->thread()->quit();
-    qApp->thread()->wait();
+    // qApp->thread()->wait();
 
     // 4. 暴力安全退出（Windows 进程直接结束）
     QCoreApplication::exit(0);
