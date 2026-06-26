@@ -1,0 +1,16 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/styles">
+        <file>styles/darkneon.qss</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="appstore.png">images/icons/appstore.png</file>
+        <file alias="jiaohumoshi.png">images/icons/jiaohumoshi.png</file>
+        <file alias="mianbushibie.png">images/icons/mianbushibie.png</file>
+        <file alias="aislogo.png">images/icons/aislogo.png</file>
+        <file alias="skill.png">images/icons/skill.png</file>
+    </qresource>
+    <qresource prefix="/logo">
+        <file alias="logo.png">images/logo/logo.png</file>
+    </qresource>
+</RCC>

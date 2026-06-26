@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PetSettingWindow</class>
+ <widget class="QWidget" name="PetSettingWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>520</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>桌宠交互设置</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_root">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>640</width>
+        <height>520</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_scroll">
+       <item>
+        <widget class="QGroupBox" name="groupBox_interact">
+         <property name="title">
+          <string>交互方式</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_interact">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_interactMode">
+            <property name="text">
+             <string>交互方式：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_interactMode">
+            <item>
+             <property name="text">
+              <string>点击交互</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>自动随机</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>跟随鼠标</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>AI 对话</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>面部追踪交互</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_actionRandom">
+            <property name="text">
+             <string>动作随机启用（s）：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_actionRandom">
+            <property name="suffix">
+             <string> s</string>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>3600</number>
+            </property>
+            <property name="value">
+             <number>30</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_expressionRandom">
+            <property name="text">
+             <string>表情随机启用（s）：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="spinBox_expressionRandom">
+            <property name="suffix">
+             <string> s</string>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>3600</number>
+            </property>
+            <property name="value">
+             <number>30</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_sound">
+         <property name="title">
+          <string>音效</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_sound">
+          <item>
+           <widget class="QLabel" name="label_volume">
+            <property name="text">
+             <string>音量：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="horizontalSlider_volume">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>60</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_volume">
+            <property name="suffix">
+             <string> %</string>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>60</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_mute">
+            <property name="text">
+             <string>静音</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_expression">
+         <property name="title">
+          <string>表情列表</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_expression">
+          <item>
+           <widget class="Live2dActionListWidget" name="widget_expressionList" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_action">
+         <property name="title">
+          <string>动作列表</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_action">
+          <item>
+           <widget class="Live2dActionListWidget" name="widget_actionList" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Live2dActionListWidget</class>
+   <extends>QWidget</extends>
+   <header>CustomWidget/live2dactionlistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

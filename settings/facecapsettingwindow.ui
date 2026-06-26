@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FaceCapSettingWindow</class>
+ <widget class="QWidget" name="FaceCapSettingWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>520</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>面捕功能设置</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_root">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::Shape::NoFrame</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>640</width>
+        <height>520</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_scroll">
+       <item>
+        <widget class="QGroupBox" name="groupBox_cam">
+         <property name="title">
+          <string>摄像头设置</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_cam">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_cam">
+            <item>
+             <widget class="QLabel" name="label_camera">
+              <property name="text">
+               <string>摄像头：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_camera">
+              <item>
+               <property name="text">
+                <string>默认摄像头</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_refreshCam">
+              <property name="text">
+               <string>刷新</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_res">
+            <item>
+             <widget class="QLabel" name="label_resolution">
+              <property name="text">
+               <string>分辨率：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_resolution">
+              <item>
+               <property name="text">
+                <string>640 x 480</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1280 x 720</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1920 x 1080</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_fps">
+              <property name="text">
+               <string>帧率：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_fps">
+              <item>
+               <property name="text">
+                <string>30 FPS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>60 FPS</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_preview">
+            <property name="text">
+             <string>打开摄像头预览</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_tracking">
+         <property name="title">
+          <string>追踪参数</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_tracking">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_sensitivity">
+            <item>
+             <widget class="QLabel" name="label_sensitivity">
+              <property name="text">
+               <string>灵敏度：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="horizontalSlider_sensitivity">
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>70</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBox_sensitivity">
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>70</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_smooth">
+            <item>
+             <widget class="QLabel" name="label_smooth">
+              <property name="text">
+               <string>平滑度：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="horizontalSlider_smooth">
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>50</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBox_smooth">
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_trackOptions">
+            <property name="text">
+             <string>跟踪选项：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_trackOptions">
+            <item>
+             <widget class="QCheckBox" name="checkBox_headTrack">
+              <property name="text">
+               <string>头部追踪</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBox_eyeTrack">
+              <property name="text">
+               <string>眼球追踪</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBox_mouthTrack">
+              <property name="text">
+               <string>嘴型追踪</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_trackOptions">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_recognizeOptions">
+            <property name="text">
+             <string>识别选项：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_recognizeOptions">
+            <item>
+             <widget class="QCheckBox" name="checkBox_blink">
+              <property name="text">
+               <string>自动眨眼</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBox_expression">
+              <property name="text">
+               <string>表情识别</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_recognizeOptions">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_crop">
+         <property name="title">
+          <string>画面裁剪</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_crop">
+          <item>
+           <widget class="QPushButton" name="pushButton_cropOptions">
+            <property name="text">
+             <string>裁剪选项</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_cropPreview">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="text">
+             <string>裁剪预览</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_crop">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
