@@ -10,6 +10,7 @@ namespace Ui { class FaceCapSettingWindow; }
 QT_END_NAMESPACE
 
 class ImageCropping;
+class CameraPreview;
 
 class FaceCapSettingWindow : public QWidget
 {
@@ -34,6 +35,8 @@ signals:
     void expressionToggled(bool enabled);
     void cropOptionsRequested();
     void cropRectChanged(const QRect &rect);
+    void accepted();
+    void rejected();
 
 public slots:
     void onCameraComboBoxChanged(int index);
@@ -51,11 +54,15 @@ public slots:
     void onBlinkToggled(bool checked);
     void onExpressionToggled(bool checked);
     void onCropOptionsClicked();
+    void onResetClicked();
+    void onCancelClicked();
+    void onOkClicked();
 
 private:
     Ui::FaceCapSettingWindow *ui;
     bool m_previewOpened = false;
     ImageCropping *m_imageCropping = nullptr;
+    CameraPreview *m_cameraPreview = nullptr;
 };
 
 #endif // FACECAPSETTINGWINDOW_H

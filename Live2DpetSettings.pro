@@ -2,6 +2,9 @@ QT       += core gui openglwidgets widgets multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+# UTF-8 编码支持
+CODECFORSRC = UTF-8
+
 CONFIG += c++17
 
 TARGET = Live2DpetSettings

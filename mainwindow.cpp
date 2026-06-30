@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     init();
     initTrayIcon();
+
 }
 
 MainWindow::~MainWindow()
@@ -131,7 +132,9 @@ void MainWindow::updateTime()
 void MainWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent(event);
+    AppUtils::instance().setTheme(0);
 }
+
 
 void MainWindow::init()
 {
@@ -143,8 +146,25 @@ void MainWindow::init()
     m_openglWidget->show();
     m_openglWidget->StartRender();
 
-    // appSettingSlotInit();
-    // faceCapSlotInit();
+    // 连接 OpenGL 工具按钮信号
+    connect(m_openglWidget, &MyOpenGL::openSettingsRequested, this, [this]() {
+        // 切换到设置页面（索引0）
+        ui->drawerSwitch->setCurrentIndex(0);
+        this->show();
+    }, Qt::QueuedConnection);
+
+    connect(m_openglWidget, &MyOpenGL::trackModeChanged, this, [](MyOpenGL::TrackMode mode) {
+        QString modeStr;
+        switch (mode) {
+        case MyOpenGL::TrackMode_None: modeStr = "None"; break;
+        case MyOpenGL::TrackMode_Mouse: modeStr = "Mouse"; break;
+        case MyOpenGL::TrackMode_Face: modeStr = "Face"; break;
+        case MyOpenGL::TrackMode_AI: modeStr = "AI"; break;
+        }
+        qDebug() << "MainWindow: Track mode changed to" << modeStr;
+    });
+
+
 }
 
 

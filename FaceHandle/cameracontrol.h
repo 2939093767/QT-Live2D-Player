@@ -13,6 +13,7 @@
 #include <QMediaDevices>
 #include <QMediaCaptureSession>
 #include <QThread>
+#include <QAtomicInt>
 #include <QVideoSink>
 
 
@@ -87,11 +88,6 @@ private:
 class CameraOpen:public QThread
 {
     Q_OBJECT
-    enum RunState{
-        Stop =0,
-        waitting,
-        Running
-    };
 
 public:
     static CameraOpen& instance(){
@@ -101,7 +97,6 @@ public:
         }
         return m_instance;
     }
-    // 禁止拷贝构造
     CameraOpen(const CameraOpen&) = delete;
     CameraOpen& operator=(const CameraOpen&) = delete;
 
@@ -111,24 +106,49 @@ public:
 
     QImage GetNowImage();
 
-private slots:
+signals:
+    void ImageSend();
+    void sigStartCamera(QCameraDevice device);
+    void sigStopCamera();
+
+private:
+    CameraOpen(QObject *parent=nullptr);
+    ~CameraOpen();
+
+    QMutex m_mutex;
+    QImage now_image;
+    QAtomicInt m_ready = 0;
+};
+
+class CameraWorker : public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(RunState)
+public:
+    enum RunState{
+        Stop = 0,
+        waitting,
+        Running
+    };
+
+    explicit CameraWorker(QMutex *mutex, QImage *sharedImage, QObject *parent = nullptr);
+    ~CameraWorker();
+
+public slots:
     void onFrameAvailable(const QVideoFrame &frame);
+    void onStartCamera(QCameraDevice device);
+    void onStopCamera();
 
 signals:
     void ImageSend();
 
 private:
-    CameraOpen(QObject *parent=nullptr);
-    ~CameraOpen();
-    //图像采集相关
     RunState flag = Running;
     QCamera* p_camera;
     QMediaCaptureSession* session;
     QVideoSink* m_videoSink;
-    //数据保存相关
-    QImage now_image ;
-    QMutex m_mutex;
-
+    QMutex* m_mutex;
+    QImage* m_nowImage;
 };
 
 

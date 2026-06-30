@@ -20,7 +20,7 @@ AppSettingWindow::AppSettingWindow(QWidget *parent)
     ui->checkBox_autoStart->blockSignals(false);
 
     ui->comboBox_theme->blockSignals(true);
-    ui->comboBox_theme->setCurrentIndex(ConfigManager::instance().getValue(CONFIG_APP_THEME, 0).toInt());
+    ui->comboBox_theme->setCurrentIndex(ConfigManager::instance().getValue(CONFIG_APP_THEME, 1).toInt());
     ui->comboBox_theme->blockSignals(false);
 
     ui->comboBox_lang->blockSignals(true);

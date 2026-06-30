@@ -51,6 +51,7 @@ int CameraManager::OpenCamera(int index)
 
     CameraOpen::instance().startCamera(&availableCameras[index]);
     FaceDetectorThread::instance().starthandle();
+    qDebug()<<"开始";
     return handle;
 }
 
@@ -86,80 +87,110 @@ QImage CameraManager::GetImageFrame(int handle)
 
 
 
-//相机运行线程
-CameraOpen::~CameraOpen()
+CameraWorker::CameraWorker(QMutex *mutex, QImage *sharedImage, QObject *parent)
+    : QObject(parent)
+    , p_camera(nullptr)
+    , session(nullptr)
+    , m_videoSink(nullptr)
+    , m_mutex(mutex)
+    , m_nowImage(sharedImage)
 {
-    flag = Stop;
-    p_camera->deleteLater();
-    m_videoSink->deleteLater();
-    session->deleteLater();
-    wait();       // 等待线程完全退出
-
 }
 
-
-void CameraOpen::run()
+CameraWorker::~CameraWorker()
 {
-    qDebug() << "相机已启动，开始获取图像帧";
-    while(true){
-        if(flag == Running or flag == waitting){
-            QThread::sleep(1000);
-        }else if(flag == Stop){
-            break;
-        }
-    }
-    // ========================
-    // 停止逻辑
-    // ========================
-    stopCamera();
-
+    if (m_videoSink) { delete m_videoSink; m_videoSink = nullptr; }
+    if (p_camera) { delete p_camera; p_camera = nullptr; }
+    if (session) { delete session; session = nullptr; }
 }
 
-void CameraOpen::startCamera(QCameraDevice* device)
+void CameraWorker::onStartCamera(QCameraDevice device)
 {
-    stopCamera();
-    p_camera->setCameraDevice(*device);
+    onStopCamera();
+    p_camera = new QCamera();
+    session = new QMediaCaptureSession();
+    m_videoSink = new QVideoSink();
+    connect(m_videoSink, &QVideoSink::videoFrameChanged,
+            this, &CameraWorker::onFrameAvailable);
+    p_camera->setCameraDevice(device);
     session->setCamera(p_camera);
     session->setVideoSink(m_videoSink);
     p_camera->start();
     flag = Running;
 }
 
+void CameraWorker::onStopCamera()
+{
+    flag = waitting;
+    if (p_camera) {
+        p_camera->stop();
+        delete p_camera;
+        p_camera = nullptr;
+    }
+    if (m_videoSink) {
+        delete m_videoSink;
+        m_videoSink = nullptr;
+    }
+    if (session) {
+        delete session;
+        session = nullptr;
+    }
+}
 
+void CameraWorker::onFrameAvailable(const QVideoFrame &frame)
+{
+    if (!frame.isValid()) return;
+    if (m_mutex && m_nowImage) {
+        QMutexLocker locker(m_mutex);
+        *m_nowImage = frame.toImage().copy();
+    }
+    emit ImageSend();
+}
+
+CameraOpen::~CameraOpen()
+{
+    quit();
+    wait();
+}
+
+
+void CameraOpen::run()
+{
+    CameraWorker worker(&m_mutex, &now_image);
+    connect(this, &CameraOpen::sigStartCamera, &worker, &CameraWorker::onStartCamera);
+    connect(this, &CameraOpen::sigStopCamera, &worker, &CameraWorker::onStopCamera);
+    connect(&worker, &CameraWorker::ImageSend, this, &CameraOpen::ImageSend);
+    m_ready.storeRelease(1);
+    qDebug() << "相机线程已启动";
+    exec();
+}
+
+void CameraOpen::startCamera(QCameraDevice* device)
+{
+    while (!m_ready.loadAcquire()) {
+        msleep(5);
+    }
+    if (device) {
+        emit sigStartCamera(*device);
+    }
+}
 
 void CameraOpen::stopCamera()
 {
-    flag = waitting;
-    p_camera->stop();
-
+    if (!m_ready.loadAcquire()) return;
+    emit sigStopCamera();
 }
 
 QImage CameraOpen::GetNowImage()
 {
     QMutexLocker locker(&m_mutex);
-    QImage copy = now_image.copy();
-    return copy;
-}
-
-
-// 回调：每一帧图像都会来这里(只采集数据，处理放到面捕线程中）
-void CameraOpen::onFrameAvailable(const QVideoFrame &frame)
-{
-    qDebug()<<"获取图像";
-    if (!frame.isValid()) return;
-    QMutexLocker locker(&m_mutex);
-    now_image = frame.toImage().copy();  // 赋值
-    emit ImageSend();
-
+    return now_image.copy();
 }
 
 CameraOpen::CameraOpen(QObject *parent)
+    : QThread(parent)
 {
-    session = new QMediaCaptureSession(this);
-    p_camera = new QCamera(this);
-    m_videoSink = new QVideoSink(this);
-    connect(m_videoSink, &QVideoSink::videoFrameChanged,
-            this, &CameraOpen::onFrameAvailable);
-
+    start();
+    setPriority(QThread::LowPriority);
 }
 

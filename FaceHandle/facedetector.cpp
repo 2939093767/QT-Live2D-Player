@@ -157,22 +157,18 @@ void FaceDetector::computeFacePose(full_object_detection& landmarks, double &yaw
 {
     qDebug()<<ori_width<<ori_width;
     int value = ConfigManager::instance().getValue(CONFIG_MOTION_IMAGE_SIZE).toInt();
+    value = 1;
     double height,width;
     if(value == 0){
+        height = 480;
+        width = 640;
+    }else if(value == 1){
+        height = 720;
+        width = 1280;
+    }else if(value == 2){
         height = 1080;
         width = 1920;
-    }else if(value == 1){
-        height = 540;
-        width = 960;
-    }else if(value == 2){
-        height = 270;
-        width = 480;
     }
-
-
-
-
-
 
 
     //2d关键点转换
@@ -373,121 +369,142 @@ void FaceDetector::test_dlib()
 
 
 
-void FaceDetectorThread::run()
+FaceDetectorWorker::FaceDetectorWorker(QMutex *mutex, QImage *sharedImage, QObject *parent)
+    : QObject(parent)
+    , m_mutex(mutex)
+    , m_sharedImage(sharedImage)
 {
-
-
-    connect(&CameraOpen::instance(),&CameraOpen::ImageSend,this,&FaceDetectorThread::ontimeout);
-    exec();
-
 }
 
-void FaceDetectorThread::ontimeout()
+FaceDetectorWorker::~FaceDetectorWorker()
 {
-    static double paw,pitch,roll;
-    static QElapsedTimer timer;
+}
 
-    if(is_processing){
-        return;
-    }
+void FaceDetectorWorker::onStartHandle()
+{
+    m_running = true;
+}
+
+void FaceDetectorWorker::onStopHandle()
+{
+    m_running = false;
+}
+
+void FaceDetectorWorker::ontimeout()
+{
+    if (!m_running) return;
+    if (is_processing) return;
+    //qDebug();
+    static double paw, pitch, roll;
+    static QElapsedTimer timer;
 
     is_processing = true;
     timer.start();
-    QImage image = CameraOpen::instance().GetNowImage();//获取当前图片
-    if(image.isNull()){
+    QImage image = CameraOpen::instance().GetNowImage();
+    if (image.isNull()) {
         is_processing = false;
         return;
     }
     cv::Mat mat;
-    PrepareImage(image,mat);
+    PrepareImage(image, mat);
     auto shape_part = FaceDetector::instance().PredictImage(mat);
-    if(shape_part.size()){
-        FaceDetector::computeFacePose(shape_part[0],paw,pitch,roll,image.width(),image.height());
-        //保存数据
-        FaceInfo data(paw,pitch,roll);
-        FaceDetector::getFaceLandmarkFeatures(shape_part[0],data);
+    if (shape_part.size()) {
+        FaceDetector::computeFacePose(shape_part[0], paw, pitch, roll, image.width(), image.height());
+        FaceInfo data(paw, pitch, roll);
+        FaceDetector::getFaceLandmarkFeatures(shape_part[0], data);
 
         char text[50];
-        sprintf(text, "yaw: %.2f", paw);  // 格式化
-        cv::putText(mat, text, cv::Point(20, 20),cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0,255,0), 2);
-        sprintf(text, "Pitch: %.2f", pitch);  // 格式化
-        cv::putText(mat, text, cv::Point(20, 60),cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0,255,0), 2);
-        sprintf(text, "Roll: %.2f", roll);  // 格式化
-        cv::putText(mat, text, cv::Point(20, 100),cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0,255,0), 2);
-        sprintf(text, "left_eye: %.2f", data.left_eye_height);  // 格式化
-        cv::putText(mat, text, cv::Point(20, 140),cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0,255,0), 2);
-        sprintf(text, "right_eye: %.2f", data.right_eye_height);  // 格式化
-        cv::putText(mat, text, cv::Point(20, 180),cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0,255,0), 2);
-        sprintf(text, "mouth: %.2f", data.mouth_height);  // 格式化
-        cv::putText(mat, text, cv::Point(20, 220),cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0,255,0), 2);
+        sprintf(text, "yaw: %.2f", paw);
+        cv::putText(mat, text, cv::Point(20, 20), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
+        sprintf(text, "Pitch: %.2f", pitch);
+        cv::putText(mat, text, cv::Point(20, 60), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
+        sprintf(text, "Roll: %.2f", roll);
+        cv::putText(mat, text, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
+        sprintf(text, "left_eye: %.2f", data.left_eye_height);
+        cv::putText(mat, text, cv::Point(20, 140), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
+        sprintf(text, "right_eye: %.2f", data.right_eye_height);
+        cv::putText(mat, text, cv::Point(20, 180), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
+        sprintf(text, "mouth: %.2f", data.mouth_height);
+        cv::putText(mat, text, cv::Point(20, 220), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
         QRC_Manager::instance().ChangeFaceInfo(data);
     }
 
-    QMutexLocker locker(&m_mutex);
-    n_image= QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGBA8888).copy();
+    if (m_mutex && m_sharedImage) {
+        QMutexLocker locker(m_mutex);
+        *m_sharedImage = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGBA8888).copy();
+    }
 
-    qint64 ms = timer.elapsed();// 毫秒
-    // 输出查看
+    qint64 ms = timer.elapsed();
     qDebug() << "算法运行耗时：" << ms << "毫秒";
     is_processing = false;
-
 }
 
+void FaceDetectorWorker::PrepareImage(QImage& image, cv::Mat& output)
+{
+    int value = ConfigManager::instance().getValue(CONFIG_MOTION_IMAGE_SIZE).toInt();
+    value = 1;
+    if(value == 0){
+        height = 480;
+        width = 640;
+    }else if(value == 1){
+        height = 720;
+        width = 1280;
+    }else if(value == 2){
+        height = 1080;
+        width = 1920;
+    }
+
+
+    output = cv::Mat(
+        image.height(),
+        image.width(),
+        CV_8UC4,
+        image.bits(),
+        image.bytesPerLine()
+    );
+    QRect rect = ConfigManager::instance().getValue(CONFIG_IMAGE_CROP_RECT).toRect();
+    if (!rect.isEmpty()) output = output(cv::Rect(rect.x(), rect.y(), rect.width(), rect.height()));
+    cv::resize(output, output, cv::Size(width, height), 0, 0, cv::INTER_LINEAR);
+}
+
+void FaceDetectorThread::run()
+{
+    FaceDetectorWorker worker(&m_mutex, &n_image);
+    connect(&CameraOpen::instance(), &CameraOpen::ImageSend, &worker, &FaceDetectorWorker::ontimeout, Qt::QueuedConnection);
+    connect(this, &FaceDetectorThread::sigStartHandle, &worker, &FaceDetectorWorker::onStartHandle);
+    connect(this, &FaceDetectorThread::sigStopHandle, &worker, &FaceDetectorWorker::onStopHandle);
+    m_ready.storeRelease(1);
+    exec();
+}
 
 FaceDetectorThread::FaceDetectorThread()
 {
-    //m_timer = new QTimer();
     start();
     setPriority(QThread::LowPriority);
 }
 
 FaceDetectorThread::~FaceDetectorThread()
 {
-    if(m_timer) {
-        m_timer->stop();  // 先停定时器
+    quit();
+    wait();
+}
+
+void FaceDetectorThread::stophandle()
+{
+    if (!m_ready.loadAcquire()) return;
+    emit sigStopHandle();
+}
+
+void FaceDetectorThread::starthandle()
+{
+    while (!m_ready.loadAcquire()) {
+        msleep(5);
     }
-
-    quit();   // ✅ 核心：退出 exec() 事件循环
-    wait();   // ✅ 等待线程完全退出（防止崩溃）
-}
-
-void FaceDetectorThread::stophandle(){
-    //disconnect(m_timer);
-}
-
-void FaceDetectorThread::starthandle(){
-    //connect(m_timer, &QTimer::timeout, this, &FaceDetectorThread::ontimeout);
+    emit sigStartHandle();
 }
 
 QImage FaceDetectorThread::GetImage()
 {
     QMutexLocker locker(&m_mutex);
     return n_image.copy();
-}
-
-
-void FaceDetectorThread::PrepareImage(QImage& image , cv::Mat& output){
-    int value = ConfigManager::instance().getValue(CONFIG_MOTION_IMAGE_SIZE).toInt();
-
-    if(value == 0){
-        height = 1080;
-        width = 1920;
-    }else if(value == 1){
-        height = 540;
-        width = 960;
-    }else if(value == 2){
-        height = 270;
-        width = 480;
-    }
-
-    output = cv::Mat(
-        image.height(),     // 高
-        image.width(),      // 宽
-        CV_8UC4,              // 3通道8位
-        image.bits(),       // 像素数据
-        image.bytesPerLine() // 行字节数
-        );
-    QRect rect = ConfigManager::instance().getValue(CONFIG_IMAGE_CROP_RECT).toRect();
-    if(!rect.isEmpty())output = output(cv::Rect(rect.x(), rect.y(), rect.width(), rect.height()));
-    cv::resize(output, output, cv::Size(width,height), 0,0, cv::INTER_LINEAR);
 }

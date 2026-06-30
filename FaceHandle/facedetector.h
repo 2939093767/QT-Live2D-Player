@@ -8,6 +8,7 @@
 #include <QImage>
 #include <QString>
 #include <QThread>
+#include <QAtomicInt>
 #include <QTimer>
 #include <QMutex>
 
@@ -68,9 +69,10 @@ private:
 
 class FaceDetectorThread : public QThread
 {
+    Q_OBJECT
 public:
     static FaceDetectorThread &instance() {
-        static FaceDetectorThread s_instance; // 饿汉式，程序启动即创建
+        static FaceDetectorThread s_instance;
         return s_instance;
     }
 
@@ -78,10 +80,10 @@ public:
     QImage GetImage();
     void stophandle();
     void starthandle();
-    void PrepareImage(QImage& image , cv::Mat& output);
-public slots:
-    void ontimeout();
 
+signals:
+    void sigStartHandle();
+    void sigStopHandle();
 
 private:
     FaceDetectorThread();
@@ -91,12 +93,32 @@ private:
 
     QImage n_image;
     QMutex m_mutex;
-    QTimer* m_timer;
+    QAtomicInt m_ready = 0;
+};
 
-    //异步处理标志位
+
+class FaceDetectorWorker : public QObject
+{
+    Q_OBJECT
+public:
+    explicit FaceDetectorWorker(QMutex *mutex, QImage *sharedImage, QObject *parent = nullptr);
+    ~FaceDetectorWorker();
+
+public slots:
+    void ontimeout();
+    void onStartHandle();
+    void onStopHandle();
+
+private:
+    void PrepareImage(QImage& image, cv::Mat& output);
+
+    QMutex* m_mutex;
+    QImage* m_sharedImage;
     bool is_processing = false;
-    //图像设置
-    double x,y,height,width; //图像处理
+    double x, y, height, width;
+    bool m_running = false;
+
+    friend class FaceDetectorThread;
 };
 
 

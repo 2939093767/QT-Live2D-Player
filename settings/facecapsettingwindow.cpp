@@ -1,6 +1,7 @@
 #include "facecapsettingwindow.h"
 #include "ui_facecapsettingwindow.h"
 #include "FaceHandle/imagecropping.h"
+#include "FaceHandle/camerapreview.h"
 #include <QDebug>
 
 FaceCapSettingWindow::FaceCapSettingWindow(QWidget *parent)
@@ -24,10 +25,17 @@ FaceCapSettingWindow::FaceCapSettingWindow(QWidget *parent)
     connect(ui->checkBox_blink, &QCheckBox::toggled, this, &FaceCapSettingWindow::onBlinkToggled);
     connect(ui->checkBox_expression, &QCheckBox::toggled, this, &FaceCapSettingWindow::onExpressionToggled);
     connect(ui->pushButton_cropOptions, &QPushButton::clicked, this, &FaceCapSettingWindow::onCropOptionsClicked);
+    connect(ui->pushButton_reset, &QPushButton::clicked, this, &FaceCapSettingWindow::onResetClicked);
+    connect(ui->pushButton_cancel, &QPushButton::clicked, this, &FaceCapSettingWindow::onCancelClicked);
+    connect(ui->pushButton_ok, &QPushButton::clicked, this, &FaceCapSettingWindow::onOkClicked);
 }
 
 FaceCapSettingWindow::~FaceCapSettingWindow()
 {
+    if (m_cameraPreview) {
+        m_cameraPreview->close();
+        delete m_cameraPreview;
+    }
     delete ui;
 }
 
@@ -56,8 +64,17 @@ void FaceCapSettingWindow::onPreviewClicked()
     m_previewOpened = !m_previewOpened;
     if (m_previewOpened) {
         ui->pushButton_preview->setText("关闭摄像头预览");
+        if (!m_cameraPreview) {
+            m_cameraPreview = new CameraPreview();
+        }
+        m_cameraPreview->startPreview();
+        m_cameraPreview->show();
     } else {
         ui->pushButton_preview->setText("打开摄像头预览");
+        if (m_cameraPreview) {
+            m_cameraPreview->stopPreview();
+            m_cameraPreview->hide();
+        }
     }
     emit previewToggled(m_previewOpened);
 }
@@ -129,4 +146,30 @@ void FaceCapSettingWindow::onCropOptionsClicked()
     }
     m_imageCropping->setImage(QImage());
     m_imageCropping->show();
+}
+
+void FaceCapSettingWindow::onResetClicked()
+{
+    ui->comboBox_camera->setCurrentIndex(0);
+    ui->comboBox_resolution->setCurrentIndex(0);
+    ui->comboBox_fps->setCurrentIndex(0);
+    ui->horizontalSlider_sensitivity->setValue(70);
+    ui->horizontalSlider_smooth->setValue(50);
+    ui->checkBox_headTrack->setChecked(true);
+    ui->checkBox_eyeTrack->setChecked(true);
+    ui->checkBox_mouthTrack->setChecked(true);
+    ui->checkBox_blink->setChecked(false);
+    ui->checkBox_expression->setChecked(false);
+}
+
+void FaceCapSettingWindow::onCancelClicked()
+{
+    emit rejected();
+    close();
+}
+
+void FaceCapSettingWindow::onOkClicked()
+{
+    emit accepted();
+    close();
 }

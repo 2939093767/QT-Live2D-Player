@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QPaintEvent>
+#include <QImage>
 
 
 namespace Ui {
@@ -26,6 +27,7 @@ private:
 public slots:
     void SaveRect();
     void ChangeInfo();
+
 signals:
     void IsUseRect(bool is);
 

@@ -1,6 +1,7 @@
 #include "imagecropping.h"
 #include "ui_imagecropping.h"
 #include <ConfigManager/configini.h>
+#include <FaceHandle/cameracontrol.h>
 
 #include <QPainter>
 
@@ -39,6 +40,10 @@ void ImageCropping::showEvent(QShowEvent *event)
 {
     setFocusPolicy(Qt::StrongFocus);
     grabKeyboard();
+    QImage img = CameraOpen::instance().GetNowImage();
+    if (!img.isNull()) {
+        ui->widget->setImage(img);
+    }
 }
 
 void ImageCropping::SaveRect()

@@ -26,6 +26,7 @@ AppUtils::AppUtils(QObject *parent)
     m_languageCodes[0] = "zh_CN";
     m_languageCodes[1] = "en_US";
     m_languageCodes[2] = "ja_JP";
+    applyTheme(m_themePaths[0]);
 }
 
 AppUtils::~AppUtils()

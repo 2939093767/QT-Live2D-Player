@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright(c) Live2D Inc. All rights reserved.
  *
  * Use of this source code is governed by the Live2D Open Software license
@@ -505,7 +505,7 @@ CubismMotionQueueEntryHandle LAppModel::StartRandomMotion(const csmChar* group, 
         return InvalidMotionQueueEntryHandleValue;
     }
 
-    csmInt32 no = rand() % _modelSetting->GetMotionCount(group);
+    csmInt32 no = ::rand() % _modelSetting->GetMotionCount(group);
 
     return StartMotion(group, no, priority, onFinishedMotionHandler, onBeganMotionHandler);
 }
@@ -578,7 +578,7 @@ void LAppModel::SetRandomExpression()
         return;
     }
 
-    csmInt32 no = rand() % _expressions.GetSize();
+    csmInt32 no = ::rand() % _expressions.GetSize();
     csmMap<csmString, ACubismMotion*>::const_iterator map_ite;
     csmInt32 i = 0;
     for (map_ite = _expressions.Begin(); map_ite != _expressions.End(); map_ite++)
